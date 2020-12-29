@@ -143,6 +143,11 @@ export default {
     };
   },
   created() {
+    let id = this.$store.state.d2admin.purchase.record_id;
+    if (id !== undefined) {
+      console.log(id)
+      this.searchById(id)
+    }
     this.getCateList(undefined, "created");
   },
 
@@ -188,10 +193,10 @@ export default {
       this.drawerShow = flag;
     },
     addBtn() {
-      this.$router.push('add')
+      this.$router.push("add");
     },
     editBtn() {
-      this.$router.push('tbImport')
+      this.$router.push("tbImport");
     },
     deleteBtn() {},
     submitBtn() {},

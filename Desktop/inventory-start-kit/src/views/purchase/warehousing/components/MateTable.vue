@@ -1,12 +1,5 @@
 <template>
-  <el-table
-    border
-    stripe
-    :data="mateTableData"
-    size="mini"
-    highlight-current-row
-    @cell-click="tableClick"
-  >
+  <el-table border stripe :data="mateTableData" size="mini" highlight-current-row>
     <el-table-column type="index" width="60" align="center"></el-table-column>
 
     <el-table-column label="物料编码" prop="goods_code"></el-table-column>
@@ -32,7 +25,12 @@
     <el-table-column prop="unit" label="单位"></el-table-column>
     <el-table-column label="操作">
       <template v-slot="{row}">
-        <el-button :disabled="!row.is_import" type="primary" size="mini">导入（{{row.device_num}}）</el-button>
+        <el-button
+          :disabled="!row.is_import"
+          type="primary"
+          size="mini"
+          @click="importTable(row)"
+        >导入（{{row.device_num}}）</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -46,8 +44,10 @@ export default {
     }
   },
   methods: {
-    tableClick(row) {
-      this.$emit("searchById", row.id);
+    importTable(row) {
+      // 别的界面需用用到这个行数据的id，所以需要把它保存起来
+      this.$store.commit("d2admin/purchase/getDetails_id", row.id);
+      this.$router.push('tbImport')
     }
   }
 };

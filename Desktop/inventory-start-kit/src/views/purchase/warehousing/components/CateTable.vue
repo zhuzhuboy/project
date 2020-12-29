@@ -45,6 +45,7 @@ export default {
   methods: {
     addTableRow() {},
     tableClick(row) {
+      this.$store.commit('d2admin/purchase/getRecord_id',row.id)
       this.$emit("searchById", row.id);
     },
     // 待审核按钮被点击

@@ -17,7 +17,7 @@
         <el-form-item>
           <el-button type="success" @click="addBtn" icon="el-icon-edit" size="small">新建采购入库单</el-button>
         </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <el-button
             type="primary"
             @click="editBtn"
@@ -30,7 +30,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="success" @click="submitBtn" icon="el-icon-upload" size="small">提交入库</el-button>
-        </el-form-item>
+        </el-form-item>-->
 
         <!-- 订单号搜索 -->
         <el-row>
@@ -98,12 +98,13 @@
       :cateTableData="cateTableData"
       :mateTableData="mateTableData"
       :drawerShow="drawerShow"
-      :multipleTable="multipleTable"
+      :cateLoading="cateLoading"
+      :listLoading="listLoading"
       @searchById="searchById"
       @modifyDrawerShow="modifyDrawerShow"
       @cateTableRef="cateTableRef"
+      @getCateList="getCateList"
     />
-    <router-view />
 
     <!-- 底部 -->
     <template slot="footer"></template>
@@ -112,23 +113,26 @@
 
 <script>
 // 相对路径
-import ContainCard from "./components/ContainCard";
-import { generatedList, enterDetails } from "@/api/purchase/purOrder.js";
+import ContainCard from './components/ContainCard'
+import {
+  generatedList,
+  enterDetails,
+  submits
+} from '@/api/purchase/purWare.js'
 
-import { toDate } from "@libs/tools.js";
+import { toDate } from '@libs/tools.js'
 
 export default {
   components: {
     ContainCard
   },
-
-  data() {
+  data () {
     return {
       cateTableData: [],
       mateTableData: [],
-      listData: [], //请求data属性全部数据
+      listData: [], // 请求data属性全部数据
       listQuery: {
-        //搜索条件和按id查找
+        // 搜索条件和按id查找
         record_id: undefined,
         odd_num: undefined,
         date: undefined,
@@ -139,89 +143,104 @@ export default {
       drawerShow: false,
       listLoading: undefined,
       cateLoading: undefined,
-      multipleTable: undefined //cateTabelRef
-    };
-  },
-  created() {
-    let id = this.$store.state.d2admin.purchase.record_id;
-    if (id !== undefined) {
-      console.log(id)
-      this.searchById(id)
+      multipleTable: undefined // cateTabelRef
     }
-    this.getCateList(undefined, "created");
   },
+  created () {
+    let showDrawer = this.$store.state.d2admin.purchase.wareDrawerShow
+    let id = this.$store.state.d2admin.purchase.record_id
+    this.$nextTick(() => {
+      if (showDrawer === true && id !== undefined) {
+        this.searchById(id)
+      }
+    })
+    this.getCateList(undefined, 'created')
+  },
+  computed: {
+    // 导入按钮对应的状态
+    importStatus () {
+      return this.$store.state.d2admin.purchase.importStatus
+    }
+  },
+  // 组件要离开的时候把vuex保存的显示抽屉状态改为false。只有在表格导入栏中会更改状态为true
+  beforeRouteLeave (to, from, next) {
+    console.log(to)
 
+    this.$store.commit('d2admin/purchase/getWareDrawerShow', false)
+    next()
+  },
   methods: {
     // 刷新
-    shuaxin() {
-      this.getCateList();
+    shuaxin () {
+      this.getCateList()
     },
-
     // 获取采购订单物料
-    async getCateList(options, flag) {
-      this.cateLoading = true;
-      let res = await generatedList(options);
-      this.listData = res.data;
-      console.log(res);
-      this.cateTableData = res.data.record;
-      this.cateLoading = false;
+    async getCateList (options, flag) {
+      this.cateLoading = true
+      let res = await generatedList(options)
+      this.listData = res.data
+      this.cateTableData = res.data.record
+      this.cateLoading = false
       // 如果flag是created证明是第一次加载。设置当前第一个数据是高亮显示
-      if (flag === "created") {
+      if (flag === 'created') {
         this.$nextTick(() => {
-          this.multipleTable.setCurrentRow(this.cateTableData[0], true);
-        });
+          this.multipleTable.setCurrentRow(this.cateTableData[0], true)
+        })
       }
     },
     // 得到详情并赋值
-    async getEnterDetails(options) {
-      this.listLoading = true;
-      let result = await enterDetails(options);
-      this.listLoading = false;
-      console.log(result);
-      this.mateTableData = result.data.list;
+    async getEnterDetails (options) {
+      this.listLoading = true
+      let result = await enterDetails(options)
+      this.listLoading = false
+      this.mateTableData = result.data.list
     },
-    searchById(id) {
-      this.modifyDrawerShow(true);
+    searchById (id) {
+      this.modifyDrawerShow(true)
       let option = {
         record_id: id
-      };
-      this.getEnterDetails(option);
+      }
+      this.getEnterDetails(option)
     },
 
     // 控制详情页显示或隐藏
-    modifyDrawerShow(flag) {
-      this.drawerShow = flag;
+    modifyDrawerShow (flag) {
+      this.drawerShow = flag
     },
-    addBtn() {
-      this.$router.push("add");
+    // 新建按钮挑战到新建页面
+    addBtn () {
+      this.$router.push('add')
     },
-    editBtn() {
-      this.$router.push("tbImport");
+    // 编辑按钮。暂时测试为挑战到导入表格页面
+    editBtn () {
+      this.$router.push('tbImport')
     },
-    deleteBtn() {},
-    submitBtn() {},
+    // 删除按钮
+    deleteBtn () {},
+    // 提交按钮
+    submitBtn () {},
     // 搜索按鈕
-    handleFilter() {
+    handleFilter () {
       // 整理请求参数
-      let dataResult = [];
-      let date = undefined;
+      let dataResult = []
+      let date
       // 选择了日期,遍历数据更改格式。
       if (Array.isArray(this.listQuery.date)) {
         this.listQuery.date.forEach(item => {
-          dataResult.push(toDate(item.getTime()));
-        });
-        date = { date: dataResult };
+          dataResult.push(toDate(item.getTime()))
+        })
+        date = { date: dataResult }
       }
 
-      let option = Object.assign({}, this.listQuery, date);
+      let option = Object.assign({}, this.listQuery, date)
 
-      this.getCateList(option);
+      this.getCateList(option)
     },
-    cateTableRef(ref) {
-      this.multipleTable = ref;
+    cateTableRef (ref) {
+      this.multipleTable = ref
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

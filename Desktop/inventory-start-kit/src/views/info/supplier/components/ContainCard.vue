@@ -1,19 +1,17 @@
 <template>
-  <el-card>
+  <el-card style="width:80%">
     <el-table
       v-loading="listLoading"
       element-loading-text="Loading"
       :data="lists"
-      border
       fit
+      border
       highlight-current-row
-      style="width:80%"
     >
-      <el-table-column type="index" width="100" label="#" align="center" />
-      <el-table-column prop="id" width="100" label="id" align="center" />
+      <el-table-column prop="id" width="100" label="#" align="center" />
       <el-table-column label="编号" prop="num" width="120" align="center" />
       <el-table-column label="供应商名称" align="center" prop="supply_name" width="180" />
-      <el-table-column label="供应商地址" prop="address" />
+      <el-table-column align="center" label="供应商地址" prop="address" />
       <el-table-column label="创建时间" align="center" prop="create_time" width="200" />
       <el-table-column label="操作" align="center" width="200">
         <template v-slot="slotProps">
@@ -52,7 +50,7 @@
 </template>
 
 <script>
-import { comSaveEd, comDel } from "@/api/supplier.js";
+import { comSaveEd, comDel } from "@/api/info/supplier.js";
 import Dialog from "./Dialog.vue";
 export default {
   components: {
@@ -72,20 +70,14 @@ export default {
       type: Boolean
     }
   },
-  created() {
-    console.log(this.listLoading);
-    setTimeout(() => {
-      console.log(this.listLoading);
-    }, 2000);
-  },
+
   data() {
     return {
-      // 编辑表单数据
+      // 新增表单数据
       formData: {
         num: "",
         supply_name: "",
-        address: "",
-        create_time: ""
+        address: ""
       },
       rowData: {} // 数据回填数据
     };
@@ -94,6 +86,7 @@ export default {
     // 新增对话框确认事件
     async addConfirm() {
       let data = this.formData;
+      //id为0是新增
       let result = await comSaveEd({ ...data, id: 0 });
 
       this.$notify({
@@ -102,8 +95,9 @@ export default {
         type: "success",
         duration: 2000
       });
+      //dialog关闭
       this.$emit("addDialog", false);
-
+      //   重新获取
       this.$emit("getList");
     },
     // 编辑按钮

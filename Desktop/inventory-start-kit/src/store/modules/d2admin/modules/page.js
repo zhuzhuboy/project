@@ -148,6 +148,7 @@ export default {
         state.opened.push(newTag)
         // 如果这个页面需要缓存 将其添加到缓存设置
         if (isKeepAlive(newTag)) {
+
           commit('keepAlivePush', tag.name)
         }
         // 持久化
@@ -183,7 +184,10 @@ export default {
           })
         } else {
           // 页面以前没有打开过
-          let page = state.pool.find(t => t.name === name)
+          let page = state.pool.find(t => {
+
+              return t.name === name
+          })
           // 如果这里没有找到 page 代表这个路由虽然在框架内 但是不参与标签页显示
           if (page) {
             await dispatch('add', {

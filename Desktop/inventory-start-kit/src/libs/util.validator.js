@@ -24,7 +24,6 @@ export var checkPassword = (rule, value, callback) => {
   }, 100)
 }
 
-
 export const validateCode = (rule, value, callback) => {
   if (!value) {
     return callback(new Error('不能为空'))

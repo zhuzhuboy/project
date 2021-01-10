@@ -13,6 +13,7 @@ process.env.VUE_APP_BUILD_TIME = require('dayjs')().format('YYYY-M-D HH:mm:ss')
 
 // 基础路径 注意发布之前要先修改这里
 let publicPath = process.env.VUE_APP_PUBLIC_PATH || '/'
+console.log(publicPath)
 
 // 设置不参与构建的库
 let externals = {}
@@ -29,7 +30,7 @@ const cdn = {
 module.exports = {
   // 根据你的实际情况更改这里
   publicPath,
-  lintOnSave: true,
+  lintOnSave: false,
   devServer: {
     publicPath // 和 publicPath 保持一致
   },

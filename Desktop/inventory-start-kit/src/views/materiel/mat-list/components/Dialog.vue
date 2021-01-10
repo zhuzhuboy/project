@@ -12,7 +12,7 @@
           <el-form-item label="物料分类" prop="category_id">
             <el-select v-model="data.category_id" placeholder="请选择" style="width:100%">
               <el-option
-                v-for="item in data.idArr"
+                v-for="item in formSelect.idArr"
                 :key="item.id"
                 :label="cateName(item.name)"
                 :value="item.id"
@@ -59,7 +59,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="采购单价" prop="purchase_price" >
+          <el-form-item label="采购单价" prop="purchase_price">
             <span class="china-money" v-show="data.purchase_price">￥</span>
             <el-input
               v-model="data.purchase_price"
@@ -70,11 +70,31 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="启动类型" prop="is_crv">
+            <el-select v-model="data.is_crv" placeholder="请选择启动类型" clearable>
+              <el-option label="钥匙启动" value="0"></el-option>
+              <el-option label="一键启动" value="1"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="扫描类型" prop="scan_type">
+            <el-select v-model="data.scan_type" placeholder="请选择扫描类型" clearable>
+              <el-option label="TBox" value="1"></el-option>
+              <el-option label="澳多通用主机" value="2"></el-option>
+              <el-option label="云掌行主机" value="3"></el-option>
+              <el-option label="澳多专用主机" value="4"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
       <el-form-item label="税率" prop="tax_rate">
         <el-select v-model="data.tax_rate" placeholder="请选择" style="width:100%">
           <el-option
-            v-for="item in data.tax_rateArr"
+            v-for="item in formSelect.tax_rateArr"
             :key="item.id"
             :label="item.rate_name"
             :value="item.tax_rate"
@@ -84,7 +104,7 @@
       <el-form-item label="物料类型" prop="m_type">
         <el-select v-model="data.m_type" placeholder="请选择" style="width:100%">
           <el-option
-            v-for="item in data.m_typeArr"
+            v-for="item in formSelect.m_typeArr"
             :key="item.id"
             :label="item.name || item.type_name"
             :value="item.id"
@@ -115,6 +135,9 @@ import { validateCode } from "@libs/util.validator.js";
 export default {
   data() {
     return {
+      select: {
+        is_crv: []
+      },
       rules: {
         category_id: [
           { required: true, message: "请输入分类ID", trigger: "blur" },
@@ -133,15 +156,14 @@ export default {
           { required: true, message: "请输入购买价格", trigger: "blur" },
           { validator: validateCode, trigger: "blur" }
         ],
-        spec:[
-          {required: true, message: "请输入规格型号", trigger: "blur"}
+        spec: [{ required: true, message: "请输入规格型号", trigger: "blur" }],
+        m_type: [
+          { required: true, message: "请输入无物料类型", trigger: "blur" }
         ],
-        m_type:[
-          {required: true, message: "请输入无物料类型", trigger: "blur"}
-        ],
-        goods_name: [{ required: true, message: "请输入计量单位", trigger: "blur" }]
-      },
-      tem: undefined
+        goods_name: [
+          { required: true, message: "请输入计量单位", trigger: "blur" }
+        ]
+      }
     };
   },
   props: {
@@ -154,6 +176,9 @@ export default {
     },
     title: {
       type: String
+    },
+    formSelect: {//form表单的select选项
+      type: Object
     }
   },
   computed: {
@@ -162,7 +187,10 @@ export default {
       get() {
         return this.dialogVisible;
       },
-      set() {}
+      set() {
+        console.log(7);
+        this.$emit("dialogClose");
+      }
     }
   },
   methods: {
@@ -170,8 +198,6 @@ export default {
     cancelBtn() {
       // 表单重置
       this.$refs.refForm.resetFields();
-      // 触发父组件的事件
-      this.$emit("dialogClose");
     },
     confirmBtn() {
       let refDom = this.$refs.refForm;
@@ -228,4 +254,3 @@ export default {
   left: 2px;
 }
 </style>
-

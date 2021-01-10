@@ -1,9 +1,11 @@
 <template>
   <el-card class="ware-card">
     <cate-table
+      :cateLoading="cateLoading"
       :cateTableData="cateTableData"
       @searchById="(id)=>{$emit('searchById',id)}"
       @cateTableRef="(ref)=>{$emit('cateTableRef',ref)}"
+      @getCateList="()=>{$emit('getCateList')}"
     />
 
     <!-- 抽屉 -->
@@ -15,7 +17,7 @@
       size="50%"
       :show-close="false"
     >
-      <mate-table :mateTableData="mateTableData" />
+      <mate-table :mateTableData="mateTableData" :listLoading="listLoading" />
     </el-drawer>
   </el-card>
 </template>
@@ -24,19 +26,21 @@
 import CateTable from "./CateTable";
 import MateTable from "./MateTable";
 export default {
-  data() {
-    return {
-      direction: undefined
-    };
-  },
   components: {
     CateTable,
     MateTable
   },
+  data() {
+    return {
+      direction: undefined // 抽屉显示方向
+    };
+  },
   props: {
+    // 详情表格数据
     mateTableData: {
       type: Array
     },
+    // 分类表格数据
     cateTableData: {
       type: Array
     },
@@ -44,6 +48,14 @@ export default {
     drawerShow: {
       type: Boolean
     },
+    // 详情表格loading
+    listLoading: {
+      type: Boolean
+    },
+    // 分类表格loading
+    cateLoading: {
+      type: Boolean
+    }
   },
   computed: {
     // 根据父组件传递来的属性。获得计算属性控制抽屉显示或隐藏
@@ -55,8 +67,7 @@ export default {
         this.$emit("modifyDrawerShow", false);
       }
     }
-  },
-
+  }
 };
 </script>
 <style>
@@ -66,9 +77,6 @@ export default {
 }
 /* 抽屉黑色框 */
 .ware-card .el-drawer:focus {
-    outline: none;
+  outline: none;
 }
 </style>
-
-
-

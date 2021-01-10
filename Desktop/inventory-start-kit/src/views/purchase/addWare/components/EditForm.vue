@@ -74,35 +74,32 @@
 </template>
 
 <script>
-import EditTable from "./EditTable";
+import EditTable from './EditTable'
 export default {
   components: {
     EditTable
   },
-  mounted() {
+  mounted () {
     // 传递ref
-    this.$emit("getFormRef", this.$refs.addWareForm);
+    this.$emit('getFormRef', this.$refs.addWareForm)
   },
-  data() {
+  data () {
     return {
       rules: {
         supply_id: [
-          { required: true, message: "请选择供应商", trigger: "change" }
+          { required: true, message: '请选择供应商', trigger: 'change' }
         ],
         stock_id: [
-          { required: true, message: "请选择仓库", trigger: "change" }
+          { required: true, message: '请选择仓库', trigger: 'change' }
         ],
         payment_id: [
-          { required: true, message: "请选择付款方式", trigger: "change" }
+          { required: true, message: '请选择付款方式', trigger: 'change' }
         ],
         bus_date: [
-          { required: true, message: "请选择业务日期", trigger: "change" }
-        ],
-        infoRemarks: [
-          { required: true, message: "请输入备注", trigger: "blur" }
+          { required: true, message: '请选择业务日期', trigger: 'change' }
         ]
       }
-    };
+    }
   },
   props: {
     formData: {
@@ -112,7 +109,7 @@ export default {
       type: Object
     }
   }
-};
+}
 </script>
 
 <style lang="scss" >

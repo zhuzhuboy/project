@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { stockSave } from '@/api/warehouse.js'
+import { stockSave } from '@/api/info/warehouse.js'
 import Dialog from './Dialog.vue'
 export default {
   components: {
@@ -47,7 +47,6 @@ export default {
       type: Boolean
     }
   },
-
   data () {
     return {
       // 新增表单数据
@@ -83,5 +82,3 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-</style>

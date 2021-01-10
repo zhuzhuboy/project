@@ -18,7 +18,7 @@ export default {
   children: (pre => [{
     path: `supplier/list`,
     name: `${pre}supplier-list`,
-    component: () => import('@/views/info/supplier/list'),
+    component: () => import('@/views/info/supplier/index'),
     meta: {
       ...meta,
       title: '供应商列表'
@@ -27,7 +27,7 @@ export default {
   {
     path: 'warehouse/list',
     name: `${pre}warehouse-list`,
-    component: () => import('@/views/info/warehouse/list'),
+    component: () => import('@/views/info/warehouse/index'),
     meta: {
       ...meta,
       title: '仓库列表'

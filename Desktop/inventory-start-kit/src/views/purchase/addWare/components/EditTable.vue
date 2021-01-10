@@ -16,7 +16,7 @@
       <el-table-column label="物料编码" prop="goods_code"></el-table-column>
       <el-table-column prop="goods_name" label="品名"></el-table-column>
       <el-table-column prop="spec" label="规格型号"></el-table-column>
-      <el-table-column style="background:red" class="backRed" prop="purchase_num" label="入库数量">
+      <el-table-column prop="purchase_num" label="入库数量">
         <template v-slot="{row,$index}">
           <input
             class="count-input"
@@ -102,10 +102,10 @@
 export default {
   data() {
     return {
-      showTable: false, //控制蒙层和子表格显示或隐藏
-      stylePosition: {}, //子表格的位置信息
-      curFatherEditRow: undefined, //当前编辑的父表格行数据
-      cardHeight: 300 //当前子表格设置的高度
+      showTable: false, // 控制蒙层和子表格显示或隐藏
+      stylePosition: {}, // 子表格的位置信息
+      curFatherEditRow: undefined, // 当前编辑的父表格行数据
+      cardHeight: 300 // 当前子表格设置的高度
     };
   },
   props: {
@@ -135,20 +135,34 @@ export default {
       // 子表格数量input消失
       row.purchase_num.show = false;
     },
+    // 备注输入框失去焦点事件
     remarksInputBlur(row) {
       row.remarks.show = false;
     },
+    fixedTwo(val) {
+      // 判断他不是一个NaN才能调用保留两位小数的方法
+      if (!isNaN(val)) {
+        return val.toFixed(2);
+      }
+    },
     // 计算金钱
     computedPrice(row) {
-      // 总价
+      // 总价（数量*单价）
       row.all_price = +row.purchase_num.value * +row.one_price;
-      // 税金
-      row.taxes = (+row.one_price / 100) * +row.tax_rate;
-      // 含税价
-      row.tax_price = +row.one_price + +row.taxes;
-      // 价税合计
-      row.total_tax_price =
-        row.all_price + (row.all_price / 100) * +row.tax_rate;
+      row.all_price = this.fixedTwo(row.all_price);
+
+      // 税金（数量*单价*税率）
+      row.taxes =
+        +row.purchase_num.value * (+row.one_price / 100) * +row.tax_rate;
+      row.taxes = this.fixedTwo(row.taxes);
+
+      // 含税价(单价+单价税钱)
+      row.tax_price = (+row.one_price / 100) * +row.tax_rate + +row.one_price;
+      row.tax_price = this.fixedTwo(row.tax_price);
+
+      // 价税合计(总价+税金)
+      row.total_tax_price = +row.all_price + +row.taxes;
+      row.total_tax_price = this.fixedTwo(row.total_tax_price);
     },
     // 子表格双击
     rowDBClick(row, column, event) {
@@ -188,6 +202,7 @@ export default {
     },
     // 父表格双击事件
     addTableRow(row, column, cell, event) {
+      console.log(row, column, cell, event);
       // 保存父表格当前行的数据，以便修改
       this.curFatherEditRow = row;
       // 判断如果是物料编码就是第一列
@@ -213,11 +228,6 @@ export default {
             bottom: "auto"
           };
         }
-      } else if (column.label === "入库数量") {
-        // 子表格数量栏控制input显示
-        row.purchase_num.show = true;
-      } else if (column.label === "备注") {
-        row.remarks.show = true;
       }
     },
     // 父表格单击事件
@@ -239,15 +249,13 @@ export default {
       });
     },
     addData(row, e) {
-      // row.remarks.show = true;
-      // 新增一行数据
       this.$emit("addInfo");
     },
     deleteData(index) {
       this.$emit("deleteInfo", index);
     },
     className({ row, column, rowIndex, columnIndex }) {
-      if (column.label === '入库数量' || column.label === '备注') {
+      if (column.label === "入库数量" || column.label === "备注") {
         return "column-bg";
       }
     }
@@ -289,13 +297,13 @@ export default {
 }
 .count-input {
   position: absolute;
-  border: 0px;
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
+  border: 0px;
   outline: none;
   top: 0;
   left: 0;
+  bottom: 0;
+  right: 0;
 
   &::-webkit-input-placeholder {
     color: rgb(160, 154, 154);
@@ -314,4 +322,3 @@ export default {
   }
 }
 </style>
-

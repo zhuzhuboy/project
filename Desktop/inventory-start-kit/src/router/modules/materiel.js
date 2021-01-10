@@ -21,7 +21,7 @@ export default {
     component: () => import('@/views/materiel/mat-list/index'),
     meta: {
       ...meta,
-      title: '物料列表'
+      title: '原始物料列表'
     }
   },
   {
@@ -30,7 +30,7 @@ export default {
     component: () => import('@/views/materiel/mat-cate/index'),
     meta: {
       ...meta,
-      title: '物料分类'
+      title: '原始物料分类'
     }
   }
   ])('info-')

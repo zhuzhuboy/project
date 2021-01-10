@@ -17,17 +17,18 @@
         <el-form-item>
           <el-button type="success" @click="addBtn" icon="el-icon-edit" size="small">新增</el-button>
         </el-form-item>
+
         <!-- id搜索 -->
         <el-form-item label="ID">
-          <el-input v-model="listQuery.id" placeholder="请输入" clearable style="width: 100px;" />
+          <el-input v-model="listQuery.id" placeholder="输入ID" clearable style="width: 100px;" />
         </el-form-item>
-        <el-form-item label="编码">
-          <el-input v-model="listQuery.num" placeholder="请输入" clearable style="width: 100px;" />
+        <el-form-item label="编号">
+          <el-input v-model="listQuery.num" placeholder="输入编号" clearable style="width: 120px;" />
         </el-form-item>
-        <el-form-item label="仓库名称">
+        <el-form-item label="供应商名称" prop="receive_name">
           <el-input
-            v-model="listQuery.stock_name"
-            placeholder="请输入"
+            v-model="listQuery.supply_name"
+            placeholder="请输入名称"
             clearable
             style="width: 120px;"
           />
@@ -45,7 +46,9 @@
       :lists="lists"
       :listLoading="listLoading"
       :addDialogVisible="addDialogVisible"
+      :editDialogVisible="editDialogVisible"
       @addDialog="addDialog"
+      @editDialog="editDialog"
     />
 
     <!-- 底部 -->
@@ -55,7 +58,7 @@
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.limit"
-        @pagination="gopage"
+        @pagination="getList()"
       />
     </template>
   </d2-container>
@@ -65,7 +68,7 @@
 import Pagination from "@/components/Pagination/index.vue";
 // 相对路径
 import ContainCard from "./components/ContainCard";
-import { stockList } from "@/api/warehouse.js";
+import { comLists, comSaveEd } from "@/api/info/supplier.js";
 
 export default {
   components: {
@@ -77,16 +80,16 @@ export default {
     return {
       lists: [],
       total: 0,
-      // 查询条件
       listQuery: {
         page: 1,
         limit: 10,
-        stock_name: undefined,
+        id: undefined,
         num: undefined,
-        id:undefined
+        supply_name: undefined
       },
       listLoading: true,
-      addDialogVisible: false // 新增对话框
+      addDialogVisible: false, // 新增对话框
+      editDialogVisible: false // 编辑对话框
     };
   },
   created() {
@@ -96,32 +99,27 @@ export default {
   methods: {
     // 刷新
     shuaxin() {
-
       this.getList();
     },
 
     // 获取数据
     async getList() {
       this.listLoading = true;
-      let res = await stockList(this.listQuery);
+      let res = await comLists(this.listQuery);
       this.lists = res.data.list;
       this.total = res.data.total;
       this.listLoading = false;
-    },
-    gopage(val) {
-      console.log(val);
-      (this.listQuery.id = undefined), (this.listQuery.stock_name = undefined);
-      this.listQuery.page = val.page;
-      this.listQuery.limit = val.limit;
-      console.log(this.listQuery);
-      this.getList();
     },
     // 添加按钮
     addBtn() {
       this.addDialogVisible = true;
     },
+
     addDialog(flag) {
       this.addDialogVisible = flag;
+    },
+    editDialog(flag) {
+      this.editDialogVisible = flag;
     },
     // 搜索按鈕
     handleFilter() {
@@ -133,4 +131,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.row-margin {
+  margin-top: 20px;
+}
 </style>

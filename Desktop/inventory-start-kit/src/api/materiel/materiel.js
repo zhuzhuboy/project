@@ -9,7 +9,7 @@ export function gCateList (data) {
   })
 }
 
-// 物料新增
+// 分类新增
 export function gCateSaveEd (data) {
   return request({
     url: 'adInfo/gCateSaveEd',
@@ -27,7 +27,7 @@ export function goodsLists (data) {
   })
 }
 
-// 物料列表
+// 物料保存
 export function goodsSaveEd (data) {
   return request({
     url: '/adInfo/goodsSaveEd',
@@ -36,7 +36,7 @@ export function goodsSaveEd (data) {
   })
 }
 
-// 物料列表
+// 物料删除
 export function goodsDel (data) {
   return request({
     url: '/adInfo/goodsDel',
@@ -44,4 +44,3 @@ export function goodsDel (data) {
     data
   })
 }
-

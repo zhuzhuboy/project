@@ -15,7 +15,10 @@
         </el-form-item>
         <!-- 新增按钮 -->
         <el-form-item>
-          <el-button type="success" @click="addBtn" icon="el-icon-edit" size="small">新增物料分类</el-button>
+          <el-button type="success" @click="addDialog(true)" icon="el-icon-edit" size="small">新增物料</el-button>
+        </el-form-item>
+        <el-form-item label="ID">
+          <el-input v-model="matListQuery.id" placeholder="请输入ID" clearable style="width: 100px;" />
         </el-form-item>
         <el-form-item label="编码">
           <el-input v-model="matListQuery.code" placeholder="请输入" clearable style="width: 100px;" />
@@ -39,24 +42,22 @@
     <ContainCard
       :cateLists="cateLists"
       :matList="matList"
-      :listLoading="listLoading"
+      :tableLoading="tableLoading"
       :addDialogVisible="addDialogVisible"
-      :editDialogVisible="editDialogVisible"
-      :listData="listData"
+      :formSelect="formSelect"
       @getList="getList"
       @addDialog="addDialog"
-      @editDialog="editDialog"
       @modifyCurCate="modifyCurCate"
     />
 
     <!-- 底部 -->
     <template slot="footer">
-        <pagination
+      <pagination
         v-show="total>0"
         :total="total"
         :page.sync="matListQuery.page"
         :limit.sync="matListQuery.limit"
-        @pagination="getList()"
+        @pagination="getList"
       />
     </template>
   </d2-container>
@@ -65,9 +66,8 @@
 <script>
 // 相对路径
 import ContainCard from "./components/ContainCard";
-import { gCateList, goodsLists } from "@/api/info/materiel.js";
-import { bubblesSort } from "@libs/tools.js";
-import Pagination from '@/components/Pagination/index.vue'
+import { gCateList, goodsLists } from "@/api/materiel/materiel.js";
+import Pagination from "@/components/Pagination/index.vue";
 
 export default {
   components: {
@@ -85,15 +85,16 @@ export default {
       matListQuery: {
         page: 1,
         limit: 10,
-        category_id: undefined,
+        id: undefined,
+        category_id: undefined, //根据不同id渲染详情页
         goods_name: undefined,
         code: undefined
       },
-      listLoading: undefined,
+      //   表格loading状态。由于分类和列表都在同一API接口得到。所以只用一个表格loading状态
+      tableLoading: false,
       addDialogVisible: false, // 新增对话框
-      editDialogVisible: false, // 编辑对话框
-      listData: undefined,
-      total:0,
+      total: 0,
+      formSelect: {} //form表单下拉选项
     };
   },
   created() {
@@ -103,54 +104,45 @@ export default {
   methods: {
     // 刷新
     shuaxin() {
-      this.matListQuery.id = undefined;
+      // 刷新功能请求不带查询条件的第一页参数
+      this.matListQuery.code = undefined;
       this.matListQuery.name = undefined;
+      this.matListQuery.id = undefined;
+      this.matListQuery.page = 1;
       this.getList();
     },
     // 获取物料列表数据，包括分类信息。下拉菜单的选项
     async getList() {
-      this.listLoading = true;
+      this.tableLoading = true;
       let res = await goodsLists(this.matListQuery);
+      this.tableLoading = false;
+
       // 分类表格数据
       this.cateLists = res.data.category;
       // 物料列表表格数据
       this.matList = res.data.list;
-      // 物料列表数据总数
 
-      this.listLoading = false;
-      console.log(res.data.total)
+      // 物料列表数据总数
       this.total = res.data.total;
       // 整个列表的全部数据。（分类，物料列表，下拉选项）
-      this.listData = res.data;
-      // 物料列表数组排序
-      bubblesSort(this.matList, "id");
+      this.formSelect.m_typeArr = res.data.goodType;
+      this.formSelect.tax_rateArr = res.data.rate;
+      this.formSelect.idArr = res.data.category.slice(1);
     },
-    // 添加按钮
-    addBtn() {
-      this.addDialogVisible = true;
-    },
+
     // 新增对话框显示或隐藏
     addDialog(flag) {
       this.addDialogVisible = flag;
     },
-    // 编辑对话框显示或隐藏
-    editDialog(flag) {
-      this.editDialogVisible = flag;
-    },
     // 点击了表格则修改物料列表渲染的数据
     modifyCurCate(row) {
       // 根据分类id渲染不同的数据。所以修改id
-      console.log(row.id)
       this.matListQuery.category_id = row.id;
-      this.matListQuery.code=undefined;
-      this.matListQuery.goods_name=undefined;
       this.getList();
     },
     // 搜索过滤
     handleFilter() {
       this.matListQuery.page = 1;
-      if (!this.matListQuery.code && !this.matListQuery.goods_name) return;
-      this.matListQuery.category_id = 0;
       this.getList();
     }
   }

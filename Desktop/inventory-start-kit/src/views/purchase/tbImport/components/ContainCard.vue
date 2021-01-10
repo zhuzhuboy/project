@@ -1,5 +1,10 @@
 <template>
   <el-card>
+    <el-alert type="success" center style="margin-bottom:20px" :closable="false">
+      <span>{{importName}}</span>
+      <span style="color:black;display:inline-block;padding-left:20px"> 当前已导入：</span>
+      <span style="color:red">{{this.table.data.length}}</span>
+    </el-alert>
     <el-table
       :data="table.data"
       row-key="id"
@@ -8,10 +13,18 @@
       v-loading="listLoading"
     >
       <el-table-column
+        align="center"
+        type="index"
+        label="#"
+        v-if="table.columns.length"
+        width="100"
+      />
+      <el-table-column
         v-for="item in table.columns"
         :prop="item.prop"
         :label="labelTransfer(item.prop)"
-        v-if="item.prop"
+        :key="item.prop"
+        align="center"
       >
         <template v-slot="{row, column}">{{tableTransferFont(row, column)}}</template>
       </el-table-column>
@@ -27,9 +40,19 @@ export default {
       type: Boolean
     }
   },
+  computed: {
+    //   当前导入多少条数据
+    importNum() {
+      return "当前已导入:" + this.table.data.length;
+    },
+    // 抽屉表格中保存的物料名称。
+    importName() {
+      return this.$store.state.d2admin.purchase.details_goodsName;
+    }
+  },
 
   methods: {
-    //当前label值是英文。转换成中文显示
+    // 当前label值是英文。转换成中文显示
     labelTransfer(val) {
       switch (val) {
         case "device_number":
@@ -37,13 +60,13 @@ export default {
         case "serial_number":
           return "tbox流水号";
         case "hosts_number":
-          return "主机号";
+          return "主机流水号";
         case "is_crv":
           return "启动方式";
         case "car_model_remarks":
-          return "主机情况下车型备注";
+          return "专用机车型备注";
         case "is_special":
-          return "机型";
+          return "设备机型";
       }
     },
     // 根据后端返回的值来显示不同的内容
@@ -55,11 +78,11 @@ export default {
         } else {
           return "一键启动";
         }
-      } else if (column.label == "机型") {
+      } else if (column.label == "设备机型") {
         if (row.is_special === 0) {
-          return "通用机";
+          return "通用机型";
         } else {
-          return "专用机";
+          return "专用机型";
         }
       } else {
         // 如果不是上面这两列。则返回该列对应的原始数据
@@ -69,4 +92,3 @@ export default {
   }
 };
 </script>
-

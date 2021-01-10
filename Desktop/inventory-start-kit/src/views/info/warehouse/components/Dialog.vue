@@ -42,25 +42,25 @@ export default {
   computed: {
     // 父组件维护dialog显示或隐藏。当前组件中会修改父组件传递过来的属性。所以使用计算属性。当对话框关闭，会触发父组件更新状态。重新拿到响应的值
     dialogShow: {
-      get () {
-        return this.dialogVisible
+      get() {
+        return this.dialogVisible;
       },
-      set () {}
+      set(val) {}
     }
   },
   methods: {
     // 取消按钮
-    cancelBtn () {
+    cancelBtn() {
       // 表单重置
-      this.$refs.refForm.resetFields()
+      this.$refs.refForm.resetFields();
       // 触发父组件的事件
-      this.$emit('dialogClose')
+      this.$emit("dialogClose");
     },
-    confirmBtn () {
-      this.$emit('confirmClick')
+    confirmBtn() {
+      this.$emit("confirmClick");
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -35,7 +35,6 @@
 import { validateCode } from '@libs/util.validator.js'
 export default {
   data () {
- 
     return {
       rules: {
         code: [{ validator: validateCode, trigger: 'blur' }],

@@ -15,20 +15,19 @@
         </el-form-item>
         <!-- 新增按钮 -->
         <el-form-item>
-          <el-button type="success" @click="addBtn" icon="el-icon-edit" size="small">新增</el-button>
+          <el-button type="success" @click="addDialog(true)" icon="el-icon-edit" size="small">新增</el-button>
         </el-form-item>
-
         <!-- id搜索 -->
         <el-form-item label="ID">
-          <el-input v-model="listQuery.id" placeholder="输入ID" clearable style="width: 100px;" />
+          <el-input v-model="listQuery.id" placeholder="请输入" clearable style="width: 100px;" />
         </el-form-item>
-        <el-form-item label="编号">
-          <el-input v-model="listQuery.num" placeholder="输入编号" clearable style="width: 120px;" />
+        <el-form-item label="编码">
+          <el-input v-model="listQuery.num" placeholder="请输入" clearable style="width: 100px;" />
         </el-form-item>
-        <el-form-item label="供应商名称" prop="receive_name">
+        <el-form-item label="仓库名称">
           <el-input
-            v-model="listQuery.supply_name"
-            placeholder="请输入名称"
+            v-model="listQuery.stock_name"
+            placeholder="请输入"
             clearable
             style="width: 120px;"
           />
@@ -46,9 +45,7 @@
       :lists="lists"
       :listLoading="listLoading"
       :addDialogVisible="addDialogVisible"
-      :editDialogVisible="editDialogVisible"
       @addDialog="addDialog"
-      @editDialog="editDialog"
     />
 
     <!-- 底部 -->
@@ -58,17 +55,18 @@
         :total="total"
         :page.sync="listQuery.page"
         :limit.sync="listQuery.limit"
-        @pagination="getList()"
+        @pagination="getList"
       />
+
     </template>
   </d2-container>
 </template>
 
 <script>
-import Pagination from '@/components/Pagination/index.vue'
+import Pagination from "@/components/Pagination/index.vue";
 // 相对路径
-import ContainCard from './components/ContainCard'
-import { comLists, comSaveEd } from '@/api/supplier.js'
+import ContainCard from "./components/ContainCard";
+import { stockList } from "@/api/info/warehouse.js";
 
 export default {
   components: {
@@ -76,63 +74,52 @@ export default {
     ContainCard
   },
 
-  data () {
+  data() {
     return {
       lists: [],
       total: 0,
+      // 查询条件
       listQuery: {
         page: 1,
         limit: 10,
-        id: undefined,
+        stock_name: undefined,
         num: undefined,
-        supply_name: undefined
+        id: undefined
       },
       listLoading: true,
-      addDialogVisible: false, // 新增对话框
-      editDialogVisible: false // 编辑对话框
-    }
+      addDialogVisible: false // 新增对话框
+    };
   },
-  created () {
-    this.getList()
+  created() {
+    this.getList();
   },
 
   methods: {
     // 刷新
-    shuaxin () {
-      this.getList()
+    shuaxin() {
+      this.getList();
     },
 
     // 获取数据
-    getList () {
-      this.listLoading = true
-      comLists(this.listQuery).then(res => {
-        this.lists = res.data.list
-        this.total = res.data.total
-        this.listLoading = false
-      })
+    async getList() {
+      this.listLoading = true;
+      let res = await stockList(this.listQuery);
+      this.lists = res.data.list;
+      this.total = res.data.total;
+      this.listLoading = false;
     },
-    // 添加按钮
-    addBtn () {
-      this.addDialogVisible = true
-    },
-    
-    addDialog (flag) {
-      this.addDialogVisible = flag
-    },
-    editDialog (flag) {
-      this.editDialogVisible = flag
+
+    addDialog(flag) {
+      this.addDialogVisible = flag;
     },
     // 搜索按鈕
-    handleFilter () {
-      this.listQuery.page = 1
-      this.getList()
+    handleFilter() {
+      this.listQuery.page = 1;
+      this.getList();
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.row-margin {
-  margin-top: 20px;
-}
 </style>

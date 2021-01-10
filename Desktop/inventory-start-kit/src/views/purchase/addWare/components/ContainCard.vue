@@ -9,7 +9,7 @@
 import editForm from './EditForm'
 import EditTable from './EditTable'
 export default {
-  components:{
+  components: {
     editForm,
     EditTable
   },
@@ -23,11 +23,11 @@ export default {
     formData: {
       type: Object
     },
-    tableData:{
-      type:Array
-    },
+    tableData: {
+      type: Array
+    }
   }
-};
+}
 </script>
 
 <style>

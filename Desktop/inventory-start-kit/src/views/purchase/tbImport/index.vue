@@ -7,7 +7,7 @@
         <!-- 导入 -->
         <el-form-item>
           <el-upload :before-upload="handleUpload" action>
-            <el-button icon="el-icon-edit" size="small" type="primary">导入</el-button>
+            <el-button icon="el-icon-download" size="small" type="primary">导入</el-button>
           </el-upload>
         </el-form-item>
         <el-form-item>
@@ -17,7 +17,7 @@
           <el-button
             icon="el-icon-check"
             type="success"
-            @click="upLoaded"
+            @click="onlyOnceFunc"
             :disabled="!deveMatchSupp[defaultActive].table.data.length"
           >确认</el-button>
         </el-form-item>
@@ -64,13 +64,26 @@
   </d2-container>
 </template>
 
-
 <script>
 import ContainCard from "./components/ContainCard";
 import { imDevice } from "@/api/purchase/tableImport.js";
+import { executeOnlyOnce } from "@libs/tools.js";
 export default {
   components: {
     ContainCard
+  },
+  // 判断vuex保存的导入按钮状态。如果是true代表点击了。则能够跳转到这个页面。如果不是，则回到原页面
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (vm.importStatus === false) {
+        next("warehousing");
+      }
+    });
+  },
+  // 当组件离开前。修改import按钮点击状态为false。只有在详情页面点击导入按钮才能改为true。
+  beforeRouteLeave(to, from, next) {
+    this.$store.commit("d2admin/purchase/getImportStatus", false);
+    next();
   },
   data() {
     return {
@@ -111,7 +124,8 @@ export default {
       ],
       listLoading: false,
       defaultActive: "0",
-      diableArr: [false, false, false]
+      diableArr: [false, false, false],
+      onlyOnceFunc: function() {} // 只执行一次的函数
     };
   },
   computed: {
@@ -119,11 +133,21 @@ export default {
     tableData() {
       return this.deveMatchSupp[this.defaultActive].table;
     },
+    // vuex中保存详情id
     details_id() {
       return this.$store.state.d2admin.purchase.details_id;
+    },
+    // 导入按钮对应的状态
+    importStatus() {
+      return this.$store.state.d2admin.purchase.importStatus;
     }
   },
-  created() {},
+  created() {
+    // 给只执行一次的函数赋值，当我点击确认按钮。只执行一次功能函数。就是指上传一次数据就跳转了
+    this.onlyOnceFunc = executeOnlyOnce(this.upLoaded);
+    // 设置抽屉显示为true，则跳转到采购入库会判断。如果为true则显示抽屉组件
+    this.$store.commit("d2admin/purchase/getWareDrawerShow", true);
+  },
   methods: {
     // menu改变
     selectActive(index, indexdPath) {
@@ -166,18 +190,25 @@ export default {
         ...this.deveMatchSupp[this.defaultActive],
         details_id: this.details_id
       };
+      console.log(options)
       // 修改浅拷贝数据格式
       options.tables = [...options.table.data];
+      // API需要的数据不包括table。置为undefined
       options.table = undefined;
-      let result = await imDevice(options);
-      this.$notify({
-        title: "",
-        message: "已成功上传 " + result.data + " 台",
-        type: "success",
-        duration: 2000
-      });
-      // 请求成功跳转路由
-      this.$router.push("warehousing");
+      let result;
+      try {
+        result = await imDevice(options);
+        this.$notify({
+          title: "",
+          message: "已成功上传 " + result.data + " 台",
+          type: "success",
+          duration: 2000
+        });
+        // 请求成功跳转路由
+        this.$router.push("warehousing");
+      } catch (error) {
+        this.deveMatchSupp[this.defaultActive].table.data = [];
+      }
     },
     clickDelete() {
       let table = {
@@ -195,14 +226,7 @@ export default {
       this.$set(this.deveMatchSupp, this.defaultActive, obj);
     }
   },
-  // 若果vuex里面没有details_id数据，则跳转回页面
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (vm.details_id === undefined) {
-        next("warehousing");
-      }
-    });
-  },
+
   watch: {
     deveMatchSupp(val) {
       let indexNum;
@@ -210,24 +234,22 @@ export default {
       val.forEach((item, index) => {
         if (item.table.data.length !== 0) {
           indexNum = index;
-          return;
         }
       });
       // 如果有被导入的数据。与disabled数组进行判断。如果索引相同则跳过，如果不同。则把disabled数组不同更改。实现点击导入后，其他选项无法点击
-      if (indexNum!==undefined) {
+      if (indexNum !== undefined) {
         for (let index = 0; index < this.diableArr.length; index++) {
           if (indexNum == index) {
             continue;
           } else {
-            console.log(index);
             this.$set(this.diableArr, index, true);
           }
         }
-      }else if(indexNum==undefined){
+      } else if (indexNum == undefined) {
         // 如果没有数据，则所有的menu菜单选项都不被禁用
-        this.diableArr.forEach((item,index)=>{
+        this.diableArr.forEach((item, index) => {
           this.$set(this.diableArr, index, false);
-        })
+        });
       }
     }
   }

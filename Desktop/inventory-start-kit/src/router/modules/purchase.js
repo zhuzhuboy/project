@@ -4,53 +4,55 @@ import layoutHeaderAside from '@/layout/header-aside'
 const _import = require('@/libs/util.import.' + process.env.NODE_ENV)
 
 const meta = {
-  auth: true
+    auth: true
 }
 
 export default {
-  path: '/purchase',
-  name: 'purchase',
-  meta,
-  redirect: {
-    name: 'purchase'
-  },
-  component: layoutHeaderAside,
-  children: (pre => [{
-      path: `warehousing`,
-      name: `${pre}warehousing`,
-      component: () => import('@/views/purchase/warehousing/index'),
-      meta: {
-        ...meta,
-        title: '采购入库'
-      }
+    path: '/purchase',
+    name: 'purchase',
+    meta,
+    redirect: {
+        name: 'purchase'
     },
-    {
-      path: 'order',
-      name: `${pre}order`,
-      component: () => import('@/views/purchase/order/index'),
-      meta: {
-        ...meta,
-        title: '采购订单'
-      }
-    },
-    {
-      path: `add`,
-      name: `${pre}add`,
-      component: () => import('@/views/purchase/addWare/index'),
-      meta: {
-        ...meta,
-        title: '新建采购入库 '
-      }
-    },
-    {
-      path: `tbImport`,
-      name: `${pre}tbImport`,
-      component: () => import('@/views/purchase/tbImport/index'),
-      meta: {
-        ...meta,
-        title: '表格导入 '
-      }
-    }
+    component: layoutHeaderAside,
+    children: (pre => [{
+            path: `warehousing`,
+            name: `${pre}warehousing`,
+            component: () => import('@/views/purchase/warehousing/index'),
+            meta: {
+                ...meta,
+                title: '采购订单列表'
+            }
+        },
+        {
+            path: `add`,
+            name: `${pre}add`,
+            component: () => import('@/views/purchase/addWare/index'),
+            meta: {
+                ...meta,
+                title: '新建采购入库 '
+            }
+        },
+        {
+            path: `tbImport`,
+            name: `${pre}tbImport`,
+            component: () => import('@/views/purchase/tbImport/index'),
+            meta: {
+                ...meta,
+                title: '入库导入'
+            }
+        },
 
-  ])('tbImport-')
+        {
+            path: `stockList`,
+            name: `${pre}stockList`,
+            component: () => import('@/views/purchase/stock-list/index'),
+            meta: {
+                ...meta,
+                title: '库存设备列表'
+            }
+        },
+
+
+    ])('purchase-')
 }

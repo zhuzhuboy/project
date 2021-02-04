@@ -5,16 +5,12 @@
       <el-form
         :inline="true"
         :model="listQuery"
-        ref="d2HeaderFormRef"
+        ref="listQuery"
         size="small"
         style="margin-bottom: -20px;"
       >
         <el-form-item>
           <el-button type="primary" icon="el-icon-refresh" @click="shuaxin" size="small">刷新</el-button>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="handleFilter" icon="el-icon-search" size="small">查找</el-button>
         </el-form-item>
       </el-form>
     </template>
@@ -62,41 +58,7 @@ export default {
     // 获取数据
     async getList() {
       this.listLoading = true;
-      //   let res = await new Promise((res, rej) => {
-      //     let time = parseInt(Math.random() * 1000 + 500);
-      //     setTimeout(() => {
-      //       let data = [
-      //         {
-      //           date: "2016-05-02",
-      //           name: "王小虎",
-      //           address: "上海市普陀区金沙江路 1518 弄"
-      //         },
-      //         {
-      //           date: "2016-05-04",
-      //           name: "王小虎",
-      //           address: "上海市普陀区金沙江路 1517 弄"
-      //         },
-      //         {
-      //           date: "2016-05-01",
-      //           name: "王小虎",
-      //           address: "上海市普陀区金沙江路 1519 弄"
-      //         },
-      //         {
-      //           date: "2016-05-03",
-      //           name: "王小虎",
-      //           address: "上海市普陀区金沙江路 1516 弄"
-      //         }
-      //       ];
-      //       res(data);
-      //     }, time);
-      //   });
-      //   this.listLoading = false;
-      //   this.tableData = res;
-      //   return;
-
-      this.listLoading = true;
       let res = await ableLists(this.listQuery);
-      console.log(res);
       this.tableData = res.data.list;
       this.total = res.data.total;
       this.listLoading = false;
@@ -112,7 +74,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.row-margin {
-  margin-top: 20px;
-}
+
 </style>

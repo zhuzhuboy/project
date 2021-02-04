@@ -184,6 +184,11 @@ export default {
       }
     }
   },
+  created(){
+
+      console.log( this.$router)
+      console.log(this.$route)
+  },
   mounted () {
     this.timeInterval = setInterval(() => {
       this.refreshTime()

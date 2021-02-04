@@ -1,6 +1,8 @@
 import layoutHeaderAside from '@/layout/header-aside'
-
+import util from '@/libs/util.js'
 // 由于懒加载页面太多的话会造成webpack热更新太慢，所以开发环境不使用懒加载，只有生产环境使用懒加载
+let showTax = util.cookies.get('show_tax');
+console.log(showTax)
 const _import = require('@/libs/util.import.' + process.env.NODE_ENV)
 
 const meta = {
@@ -21,7 +23,8 @@ export default {
             component: () => import('@/views/purchase/warehousing/index'),
             meta: {
                 ...meta,
-                title: '采购订单列表'
+                title: '入库订单列表',
+                showTax: showTax
             }
         },
         {
@@ -30,7 +33,7 @@ export default {
             component: () => import('@/views/purchase/addWare/index'),
             meta: {
                 ...meta,
-                title: '新建采购入库 '
+                title: '新建入库 '
             }
         },
         {

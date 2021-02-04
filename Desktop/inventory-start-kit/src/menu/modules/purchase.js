@@ -1,15 +1,21 @@
 export default {
     path: '/purchase',
-    title: '采购',
-    icon: 'book',
+    title: '入库',
+    icon: 'archive',
     children: (pre => [{
             path: `${pre}/warehousing`,
-            title: '采购订单列表',
-            icon: 'file-text'
-        }, {
+            title: '入库订单列表',
+            icon: 'list'
+        },
+        {
+            path: `${pre}/add`,
+            title: '新建入库',
+            icon: 'plus-square-o'
+        },
+        {
             path: `${pre}/stockList`,
             title: '库存设备列表',
-            icon: 'file-text'
+            icon: 'list'
         }
     ])('/purchase')
 }

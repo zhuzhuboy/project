@@ -17,34 +17,36 @@
 
         <el-col :span="7" style="max-width:300px;min-width:300px">
           <el-form-item label="业务时间" prop="bus_date">
-            <el-date-picker v-model="form.bus_date" :clearable="false" ref="dataPicker"></el-date-picker>
+            <el-date-picker v-model="form.bus_date" :clearable="false" value-format="yyyy-MM-dd"></el-date-picker>
           </el-form-item>
         </el-col>
 
-        <el-col :span="11" class="custom">
-          <el-form-item label="客户" prop="agent_uid">
+        <el-col :span="14" class="custom">
+          <el-form-item label="客户" prop="uid">
             <el-select
               clearable
-              v-model="form.agent_uid"
+              v-model="form.uid"
               filterable
               remote
-              placeholder="请输入代理位置"
+              style="width:350px"
+              placeholder="请输入客户姓名/手机号/地址"
               :remote-method="debounceFunc"
+              @change="change"
               :loading="loading"
             >
               <el-option
                 v-for="item in areaList"
-                :key="item.agent_uid"
-                :label="item.agent_area"
-                :value="item.agent_uid"
+                :key="item.uid"
+                :label="item.customerInfo"
+                :value="item.uid"
               ></el-option>
             </el-select>
             <el-button
               type="primary"
               size="small"
               style="margin-left:20px"
-              @click="fillInfoBtn"
-            >完善信息</el-button>
+              @click="()=>{this.$router.push('/set/customer/importCustomer')}"
+            >新增客户</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -52,41 +54,32 @@
       <el-row :gutter="20" class="row-two">
         <el-col :span="2" style="min-width:220px" class="warehouse">
           <el-form-item label="收货人姓名" prop="receive_name" label-width="100px">
-            <div
+            <!-- <div
               :class="{'form-bor-red':!form.receive_name,'form-bor-black':form.receive_name,'form-bor':true}"
-            >{{form.receive_name}}</div>
+            >{{form.receive_name}}</div>-->
+            <el-input v-model="form.receive_name"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="4">
           <el-form-item label="电话">
-            <div
+            <!-- <div
               :class="{'form-bor-red':!form.receive_phone,'form-bor-black':form.receive_phone,'form-bor':true}"
-            >{{form.receive_phone}}</div>
+            >{{form.receive_phone}}</div>-->
+            <el-input v-model="form.receive_phone"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
           <el-form-item label-width="100px" label="收货人地址">
-            <div
+            <!-- <div
               :class="{'form-bor-red':!form.receive_address,'form-bor-black':form.receive_address,'form-bor':true}"
-            >{{form.receive_address}}</div>
+            >{{form.receive_address}}</div>-->
+            <el-input v-model="form.receive_address"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
       <!-- 第三行 -->
       <el-row>
-        <el-col :span="3">
-          <el-form-item label="激动状态">
-            <el-tag v-if="activate_time===0" size="small">待激活</el-tag>
-            <el-tag v-else size="small">已激活</el-tag>
-          </el-form-item>
-        </el-col>
-        <el-col :span="3">
-          <el-form-item label-width="100px" label="未激活台数">
-            <el-tag size="small" v-if="device_undelivered===undefined">0</el-tag>
-            <el-tag size="small" v-else>{{device_undelivered}}</el-tag>
-          </el-form-item>
-        </el-col>
         <el-col :span="4">
           <el-form-item label="付款方式" prop="pay_id">
             <el-select v-model="form.pay_id" placeholder="请选择" style="width:100%" clearable>
@@ -149,20 +142,18 @@ export default {
       form: {
         bus_date: undefined, // 业务时间
         stock_id: undefined, // 仓库
-        agent_uid: undefined, // 代理地区
+        uid: undefined, // 代理地区
         pay_id: undefined, // 支付方式id
         receive_name: undefined, // 收货人姓名
         receive_phone: undefined, // 收货人手机号
         receive_address: undefined, // 收货人手机号
         remarks: undefined
       },
-      device_undelivered: undefined, // 未激活数量
       debounceFunc: undefined, // 防抖函数
       loading: undefined, // 远程搜索loading属性
       areaList: [], // 远程搜索数组列表
-      activate_time: undefined, // 激活时间。如果等于0表示未激活
       rules: {
-        agent_uid: [
+        uid: [
           { required: true, message: "请输入客户代理位置", trigger: "change" }
         ],
         stock_id: [
@@ -181,46 +172,35 @@ export default {
   methods: {
     //   完善信息
     async fillInfoBtn() {
-      let id = this.form.agent_uid;
-      if (id) {
-        let option = {
-          agent_uid: id
-        };
-        // 根据id获得用户信息
-        let result = await perInfo(option);
-        result = result.data;
-        this.form.receive_address = result.receive_address;
-        this.form.receive_name = result.receive_name;
-        this.form.receive_phone = result.receive_phone;
-        this.device_undelivered = result.device_undelivered;
-        this.activate_time = result.activate_time;
-        console.log(this.form);
-      } else {
-        this.$notify({
-          title: "",
-          message: "请填写客户输入框",
-          type: "info",
-          duration: 2000
-        });
-      }
+      let id = this.form.uid;
+      let option = {
+        uid: id
+      };
+      // 根据id获得用户信息
+      let result = await perInfo(option);
+      result = result.data;
+      this.form.receive_address = result.address;
+      this.form.receive_name = result.name;
+      this.form.receive_phone = result.phone;
+    },
+    change() {
+      this.fillInfoBtn();
     },
     //   远程搜索
     async remoteMethod(queryString) {
-      console.log(555555);
       //  如果输入值为空或者是undefined。列表置空。不再执行
       if (queryString == "" || queryString == undefined) {
         this.areaList = [];
-        this.form.agent_uid = undefined;
+        this.form.uid = undefined;
         return;
       }
 
       let option = {
-        area: queryString
+        condition: queryString
       };
       this.loading = true;
       // 远程搜索
       let result = await searchArea(option);
-      console.log(result.data);
       this.loading = false;
       this.areaList = result.data;
     }

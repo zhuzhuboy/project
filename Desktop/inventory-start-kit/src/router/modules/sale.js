@@ -16,23 +16,23 @@ export default {
     },
     component: layoutHeaderAside,
     children: (pre => [{
-            // 新建销售订单
+            // 新建出库订单
             path: `addOrder`,
             name: `${pre}addOrder`,
             component: () => import('@/views/sale/addOrder/index'),
             meta: {
                 ...meta,
-                title: '新建销售订单'
+                title: '新建出库订单'
             }
         },
         {
-            // 销售订单列表
+            // 出库订单列表
             path: `orderList`,
             name: `${pre}orderList`,
             component: () => import('@/views/sale/orderList/index'),
             meta: {
                 ...meta,
-                title: '销售订单列表',
+                title: '出库订单列表',
                 cache: true
             }
         },
@@ -48,7 +48,7 @@ export default {
             beforeEnter(to, from, next) {
                 // 判断vuex中是否点击了出库。
                 if (store.state.d2admin.sale.deliveryStatus == false) {
-                    // 点击了出库，判断从哪个页面过来的。如果是从销售订单列表页面过来的就跳转到首页，如果不是则跳转到销售订单列表页
+                    // 点击了出库，判断从哪个页面过来的。如果是从出库订单列表页面过来的就跳转到首页，如果不是则跳转到出库订单列表页
                     if (from.name == 'sale-orderList') {
                         next('/')
                     } else {
@@ -69,6 +69,7 @@ export default {
                 ...meta,
                 title: '出库设备列表'
             }
-        }
+        },
+
     ])('sale-')
 }

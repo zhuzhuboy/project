@@ -1,6 +1,6 @@
 <template>
   <el-table border stripe :data="mateTableData" size="mini" highlight-current-row>
-    <el-table-column align="center" prop="id" width="60" label="#" />
+    <el-table-column align="center" prop="id" label="#" />
     <el-table-column align="center" label="物料编码" prop="s_goods_code" />
     <el-table-column align="center" prop="s_goods_name" label="物料名称" />
     <el-table-column align="center" prop="s_purchase_num" label="购买数量" />
@@ -45,7 +45,8 @@ export default {
   methods: {
     //  出库按钮
     deliveryBtn(row) {
-      console.log(row);
+      this.$emit("modifyDrawerShow", false);
+
       // 别的界面需用用到这个行数据，所以需要把它保存起来
       let payload = {};
       payload.is_crv = row.is_crv;
@@ -59,8 +60,9 @@ export default {
 
       this.$router.push("delivery");
     },
+    // 查看按钮
     lookUpBtn(row) {
-      console.log(row);
+      this.$emit("modifyDrawerShow", false);
       let payload = {};
       payload.id = row.id;
       payload.s_goods_name = row.s_goods_name;
@@ -73,5 +75,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+

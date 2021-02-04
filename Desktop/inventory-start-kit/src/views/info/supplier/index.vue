@@ -19,13 +19,13 @@
         </el-form-item>
 
         <!-- id搜索 -->
-        <el-form-item label="ID">
+        <el-form-item label="ID" prop="id">
           <el-input v-model="listQuery.id" placeholder="输入ID" clearable style="width: 100px;" />
         </el-form-item>
-        <el-form-item label="编号">
+        <el-form-item label="编号" prop="num">
           <el-input v-model="listQuery.num" placeholder="输入编号" clearable style="width: 120px;" />
         </el-form-item>
-        <el-form-item label="供应商名称" prop="receive_name">
+        <el-form-item label="供应商名称" prop="supply_name">
           <el-input
             v-model="listQuery.supply_name"
             placeholder="请输入名称"
@@ -98,14 +98,22 @@ export default {
 
   methods: {
     // 刷新
+
     shuaxin() {
-      this.getList();
+      // 表单重置
+      this.$refs.listQuery.resetFields();
+      //   请求参数
+      let listQuery = {
+        page: 1,
+        limit: 10
+      };
+      this.getList(listQuery);
     },
 
     // 获取数据
-    async getList() {
+    async getList(option) {
       this.listLoading = true;
-      let res = await comLists(this.listQuery);
+      let res = await comLists(option ? option : this.listQuery);
       this.lists = res.data.list;
       this.total = res.data.total;
       this.listLoading = false;

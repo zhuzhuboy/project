@@ -1,13 +1,24 @@
 <template>
-  <el-card >
-  <editForm :formData="formData" :form="form" @getFormRef="(ref)=>$emit('getFormRef',ref)" />
-  <EditTable :tableData="tableData" :formData="formData" @addInfo="$emit('addInfo')" @deleteInfo="index=>$emit('deleteInfo',index)"/>
+  <el-card>
+    <editForm
+      :formData="formData"
+      :form="form"
+      :isEdit="isEdit"
+      @getFormRef="(ref)=>$emit('getFormRef',ref)"
+    />
+    <EditTable
+      :tableData="tableData"
+      :formData="formData"
+      :isEdit="isEdit"
+      @addInfo="$emit('addInfo')"
+      @deleteInfo="index=>$emit('deleteInfo',index)"
+    />
   </el-card>
 </template>
 
 <script>
-import editForm from './EditForm'
-import EditTable from './EditTable'
+import editForm from "./EditForm";
+import EditTable from "./EditTable";
 export default {
   components: {
     editForm,
@@ -25,9 +36,15 @@ export default {
     },
     tableData: {
       type: Array
+    },
+    isEdit: {
+      type: Boolean
+    },
+    getTableDataByVuex: {
+      type: Object
     }
   }
-}
+};
 </script>
 
 <style>

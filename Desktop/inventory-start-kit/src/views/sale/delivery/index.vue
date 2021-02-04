@@ -4,15 +4,7 @@
     <template slot="header">
       <el-form :inline="true" ref="listQuery" size="small" style="margin-bottom: -20px;">
         <!-- 按钮区 -->
-        <!-- 导入 -->
-        <!-- <el-form-item>
-          <el-upload :before-upload="handleUpload" action>
-            <el-button icon="el-icon-download" size="small" type="primary">导入</el-button>
-          </el-upload>
-        </el-form-item>-->
-        <el-form-item>
-          <el-button icon="el-icon-delete" type="danger">清空</el-button>
-        </el-form-item>
+
         <el-form-item>
           <el-button icon="el-icon-check" type="success" @click="submitDevice">提交</el-button>
         </el-form-item>
@@ -61,7 +53,7 @@ export default {
     async submitDevice() {
       let table = this.$refs.layoutRef.tableData;
       let option = {};
-      option.agent_uid = this.cateTableInfo.agent_uid;
+      option.uid = this.cateTableInfo.uid;
       option.scan_type = this.detailTableInfo.scan_type;
       option.sale_details_id = this.detailTableInfo.id;
       option.tables = table;

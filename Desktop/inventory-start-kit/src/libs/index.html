@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        class HighPrecisionCalc {
+            constructor() { }
+            // 判断是否是整数,严谨性判断（是字符串也不行）
+            isInteger(val) {
+                return Math.floor(val) === val
+            }
+            // 得到整数
+            toInteger(floatNum) {
+                // 如果是字符串先转换成数字
+                floatNum = +floatNum
+                let ret = {
+                    times: 0,
+                    originNum: floatNum,//原数值(数字类型)
+                    num: 0,
+                    len: 0
+                }
+                // 如果是整数就赋值后不在执行
+                if (this.isInteger(floatNum)) {
+                    ret.num = floatNum
+                    return ret
+                }
+                // 转成字符串
+                let strfi = floatNum + ''
+                // 判断有没有小数点
+                let dotPos = strfi.indexOf('.')
+                let len;
+                // 如果没有小数点，len为0
+                if (dotPos == -1) {
+                    len = 0
+                } else {
+                    // 如果有小数点，小数点后面的长度为len值
+                    len = strfi.substr(dotPos + 1).length
+                }
+                // 当前倍数
+                let times = Math.pow(10, len)
+                // 得到整数
+                let intNum = parseInt(floatNum * times + 0.5, 10)
+                // 存储当前倍数
+                ret.times = times
+                // 整数值
+                ret.num = intNum
+                // 长度值
+                ret.len = len
+                // 返回这个对象
+                return ret
+            }
+            operation(a, b, digits, op) {
+                let o1 = this.toInteger(a)
+                let o2 = this.toInteger(b)
+                console.log(o1, o2)
+                // 找到两个数中最大倍数
+                let max = o1.times > o2.times ? o1.times : o2.times;
+                // 找到两个数中最大长度
+                let maxLen = o1.len > o2.len ? o1.len : o2.len;
+                // o1倍数等于最大长度减去自身（自身通过转换字符串移除小数点）
+                let o1Pow = Math.pow(10, maxLen - o1.len)
+                // o2倍数等于最大长度减去自身（自身通过转换字符串移除小数点）
+                let o2Pow = Math.pow(10, maxLen - o2.len)
+                // 得到长度总和
+                let totalLen = o1.len + o2.len;
+                // 根据长度总和计算出的最多倍数
+                let maxPower = Math.pow(10, totalLen)
+                let result = null
+                // 乘法和除法
+
+
+                switch (op) {
+                    case 'add':
+                        // 如果是加法，原数转换成字符串去掉点再成倍数，相加
+                        result = (o1.originNum.toString().replace(/\./, '') * o1Pow) + (o2.originNum.toString().replace(/\./, '') * o2Pow)
+                        break
+                    case 'subtract':
+                        // 如果是减法，原数转换成字符串去掉点再成倍数，相减
+                        result = (o1.originNum.toString().replace(/\./, '') * o1Pow) - (o2.originNum.toString().replace(/\./, '') * o2Pow)
+                        break
+                    case 'multiply':
+                        // 乘法，无小数值相乘
+                        result = o1.num * o2.num
+                        break
+                    case 'divide':
+                        // 除法，无小数值相除
+                        result = o1.num / o2.num
+                        break
+                }
+                //  如果是乘除法
+                if (op === 'multiply' || op === 'divide') {
+                    // 判断最多倍数是否为0，为0，则直接返回结果
+                    if (maxPower == 0) {
+                        return result
+                    }
+                    // 返回结果除以最多倍数
+                    return result / maxPower
+                } else {
+                    // 这里是加减法
+                    // 判断最大倍数是否是0，如果是0，则直接返回结果
+                    if (max == 0) {
+                        return result
+                    }
+                    // 返回结果除以最大倍数
+                    return result / max
+                }
+
+
+            }
+
+            add(val1, val2, digits) {
+                return this.operation(val1, val2, digits, 'add')
+            }
+
+            subtract(val1, val2, digits) {
+                return this.operation(val1, val2, digits, 'subtract')
+            }
+
+            multiply(val1, val2, digits) {
+                return this.operation(val1, val2, digits, 'multiply')
+            }
+
+            divide(val1, val2, digits) {
+                return this.operation(val1, val2, digits, 'divide')
+            }
+        }
+        let v = new HighPrecisionCalc()
+        console.log(v.multiply(0.5, 0.25))
+        console.log(v.add(0.01, 0.2))
+        console.log(v.add('0.01', '0.2'))
+        console.log(v.multiply('0.5', '0.25'))
+        console.log(v.multiply('10.5', '10'))
+        console.log(v.multiply('10', '10'))
+        console.log(v.add('10.000', 0.2))
+        console.log(v.add('0.01', 0.2))
+        console.log(v.add('4.1899', 32.23))
+    </script>
+</body>
+
+</html>

@@ -3,9 +3,7 @@
     <cate-table
       :cateLoading="cateLoading"
       :cateTableData="cateTableData"
-      @searchById="(id)=>{$emit('searchById',id)}"
-      @cateTableRef="(ref)=>{$emit('cateTableRef',ref)}"
-      @getCateList="()=>{$emit('getCateList')}"
+      v-on="$listeners"
     />
 
     <!-- 抽屉 -->
@@ -16,6 +14,7 @@
       class="drawer-pad"
       size="50%"
       :show-close="false"
+      :modal-append-to-body="false"
     >
       <mate-table :mateTableData="mateTableData" :listLoading="listLoading" />
     </el-drawer>

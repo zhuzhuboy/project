@@ -30,3 +30,11 @@ export function submits (data) {
     data
   })
 }
+// 删除
+export function del (data) {
+    return request({
+      url: '/adEnter/del',
+      method: 'post',
+      data
+    })
+  }

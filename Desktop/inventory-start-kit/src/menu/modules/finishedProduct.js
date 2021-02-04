@@ -2,17 +2,17 @@
 export default {
     path: '/finishedProduct',
     title: '成品',
-    icon: 'book',
+    icon: 'podcast',
     children: (pre => [
       {
         path: `${pre}/list`,
         title: '成品列表',
-        icon: 'file-text'
+        icon: 'list'
       },
       {
         path: `${pre}/synthesis`,
         title: '合并成品',
-        icon: 'file-text'
+        icon: 'shopping-basket'
       }
     ])('/finishedProduct')
   }

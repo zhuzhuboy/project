@@ -17,8 +17,8 @@
           <el-button
             icon="el-icon-check"
             type="success"
-            @click="onlyOnceFunc"
-            :disabled="!deveMatchSupp[defaultActive].table.data.length"
+            @click="upLoaded"
+            :disabled="!deveMatchSupp.table.data.length"
           >确认</el-button>
         </el-form-item>
       </el-form>
@@ -54,7 +54,7 @@
           </el-menu>
         </el-aside>
         <el-main style="padding-top:0">
-          <ContainCard :table="tableData" :listLoading="listLoading" />
+          <ContainCard :table="deveMatchSupp.table" :listLoading="listLoading" />
         </el-main>
       </el-container>
     </el-container>
@@ -87,52 +87,23 @@ export default {
   },
   data() {
     return {
-      deveMatchSupp: [
-        {
-          type: 0,
-          device_type: 0,
-          table: {
-            columns: [],
-            data: [],
-            size: "mini",
-            stripe: true,
-            border: true
-          }
-        },
-        {
-          type: 1,
-          device_type: 0,
-          table: {
-            columns: [],
-            data: [],
-            size: "mini",
-            stripe: true,
-            border: true
-          }
-        },
-        {
-          type: 1,
-          device_type: 1,
-          table: {
-            columns: [],
-            data: [],
-            size: "mini",
-            stripe: true,
-            border: true
-          }
+      deveMatchSupp: {
+        type: 0,
+        device_type: 0,
+        table: {
+          columns: [],
+          data: [],
+          size: "mini",
+          stripe: true,
+          border: true
         }
-      ],
+      },
       listLoading: false,
       defaultActive: "0",
-      diableArr: [false, false, false],
-      onlyOnceFunc: function() {} // 只执行一次的函数
+      diableArr: [false, false, false]
     };
   },
   computed: {
-    // 根据当前menu索引返回table表格数据
-    tableData() {
-      return this.deveMatchSupp[this.defaultActive].table;
-    },
     // vuex中保存详情id
     details_id() {
       return this.$store.state.d2admin.purchase.details_id;
@@ -143,8 +114,6 @@ export default {
     }
   },
   created() {
-    // 给只执行一次的函数赋值，当我点击确认按钮。只执行一次功能函数。就是指上传一次数据就跳转了
-    this.onlyOnceFunc = executeOnlyOnce(this.upLoaded);
     // 设置抽屉显示为true，则跳转到采购入库会判断。如果为true则显示抽屉组件
     this.$store.commit("d2admin/purchase/getWareDrawerShow", true);
   },
@@ -152,6 +121,16 @@ export default {
     // menu改变
     selectActive(index, indexdPath) {
       // 更改默认选项为当前索引
+      if (index == 0) {
+        this.deveMatchSupp.type = 0;
+        this.deveMatchSupp.device_type = 0;
+      } else if (index == 1) {
+        this.deveMatchSupp.type = 1;
+        this.deveMatchSupp.device_type = 0;
+      } else {
+        this.deveMatchSupp.type = 1;
+        this.deveMatchSupp.device_type = 1;
+      }
       this.defaultActive = index;
     },
     // 上传数据，把数据处理成elementUI表格类型。
@@ -165,18 +144,11 @@ export default {
             prop: e
           };
         });
-        // 由于传递给表格的数据是计算属性。所以要更改数据对象。触发计算属性更新。
 
-        // 把要修改的数组项取出来
-        let colomn = this.deveMatchSupp[this.defaultActive];
-        // 修改数组项中的数据
-        colomn.table.columns = arr;
-        // 通过$set修改数组。
-        this.$set(this.deveMatchSupp, this.defaultActive, colomn);
-        // 同上
-        let data = this.deveMatchSupp[this.defaultActive];
-        data.table.data = results;
-        this.$set(this.deveMatchSupp, this.defaultActive, data);
+        // 保存表格列数据
+        this.deveMatchSupp.table.columns = arr;
+        // 保存表格data数据
+        this.deveMatchSupp.table.data = results;
         this.listLoading = false;
       });
       // 阻止
@@ -185,12 +157,11 @@ export default {
     // 确认
     async upLoaded() {
       // 浅拷贝作为请求参数
-      // details_id从vuex中保存的数据，在列表详情页中导入按钮中实现保存逻辑
+
       let options = {
-        ...this.deveMatchSupp[this.defaultActive],
+        ...this.deveMatchSupp,
         details_id: this.details_id
       };
-      console.log(options)
       // 修改浅拷贝数据格式
       options.tables = [...options.table.data];
       // API需要的数据不包括table。置为undefined
@@ -207,11 +178,11 @@ export default {
         // 请求成功跳转路由
         this.$router.push("warehousing");
       } catch (error) {
-        this.deveMatchSupp[this.defaultActive].table.data = [];
+        this.deveMatchSupp.table.data = [];
       }
     },
     clickDelete() {
-      let table = {
+      let temp = {
         columns: [],
         data: [],
         size: "mini",
@@ -219,33 +190,29 @@ export default {
         border: true
       };
       // 获得当前修改的数据项
-      let obj = { ...this.deveMatchSupp[this.defaultActive] };
+      let table = { ...temp };
       // 进行修改
-      obj.table = table;
-      // 使用$set动态更新
-      this.$set(this.deveMatchSupp, this.defaultActive, obj);
+      this.deveMatchSupp.table = table;
     }
   },
 
   watch: {
-    deveMatchSupp(val) {
-      let indexNum;
+    "deveMatchSupp.table.data"(val) {
+      let flag;
       // 判断有没有数据被导入
-      val.forEach((item, index) => {
-        if (item.table.data.length !== 0) {
-          indexNum = index;
-        }
-      });
+      if (val.length !== 0) {
+        flag = true;
+      }
       // 如果有被导入的数据。与disabled数组进行判断。如果索引相同则跳过，如果不同。则把disabled数组不同更改。实现点击导入后，其他选项无法点击
-      if (indexNum !== undefined) {
+      if (flag !== undefined) {
         for (let index = 0; index < this.diableArr.length; index++) {
-          if (indexNum == index) {
+          if (this.defaultActive == index) {
             continue;
           } else {
             this.$set(this.diableArr, index, true);
           }
         }
-      } else if (indexNum == undefined) {
+      } else {
         // 如果没有数据，则所有的menu菜单选项都不被禁用
         this.diableArr.forEach((item, index) => {
           this.$set(this.diableArr, index, false);

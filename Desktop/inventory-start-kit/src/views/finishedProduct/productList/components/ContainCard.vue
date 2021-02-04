@@ -1,5 +1,5 @@
 <template>
-  <el-card style="width: 80%">
+  <el-card >
     <el-table
       v-loading="false"
       :data="tableData"
@@ -9,9 +9,10 @@
       highlight-current-row
       stripe
     >
-      <el-table-column label="#" align="center" prop="id" width="100" />
+      <el-table-column label="#" align="center" prop="id" width="80" />
 
-      <el-table-column label="用户ID" align="center" prop="agent_uid" width="100" />
+      <el-table-column label="客户姓名" align="center" prop="name" width="90" />
+      <el-table-column label="客户地址" align="center" prop="address" width="100" />
 
       <el-table-column label="厂家" prop="device_type" width="100" align="center">
         <template v-slot="{row}">
@@ -19,7 +20,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="启动方式" prop="is_crv" width="120" align="center">
+      <el-table-column label="启动方式" prop="is_crv" width="110" align="center">
         <template v-slot="{row}">
           <span>{{row.is_crv==0?'钥匙启动':'一键启动'}}</span>
         </template>

@@ -1,5 +1,5 @@
  <template>
-  <!-- <el-dropdown placement="bottom" size="small" @command="handleChange">
+  <el-dropdown placement="bottom" size="small" @command="handleChange">
     <el-button class="d2-mr btn-text can-hover" type="text">
       <d2-icon name="font" style="font-size: 16px;"/>
     </el-button>
@@ -8,7 +8,7 @@
         <d2-icon :name="iconName(item.value)" class="d2-mr-5"/>{{item.label}}
       </el-dropdown-item>
     </el-dropdown-menu>
-  </el-dropdown> -->
+  </el-dropdown>
 </template>
 
 <script>

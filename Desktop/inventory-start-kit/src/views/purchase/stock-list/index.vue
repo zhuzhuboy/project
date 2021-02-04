@@ -10,53 +10,44 @@
         label-width="120px"
         class="search-header"
       >
-        <!-- 按钮区 -->
-
         <!-- 搜索区 -->
-        <el-row>
-          <el-col :span="4">
-            <el-form-item label="ID">
-              <el-input clearable v-model="listQuery.id" placeholder="请输入ID"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="厂家">
-              <el-select v-model="listQuery.device_type" clearable placeholder="请选择厂家">
-                <el-option
-                  v-for="item in searchForm.device_type"
-                  :label="item.name"
-                  :value="item.value"
-                  :key="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="类型">
-              <el-select v-model="listQuery.type" clearable placeholder="请选择类型">
-                <el-option
-                  v-for="item in searchForm.type"
-                  :label="item.name"
-                  :value="item.value"
-                  :key="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="4">
-            <el-form-item label="启动类型">
-              <el-select v-model="listQuery.is_crv" clearable placeholder="请选择启动类型">
-                <el-option
-                  v-for="item in searchForm.is_crv"
-                  :label="item.name"
-                  :value="item.value"
-                  :key="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
+        <el-collapse>
+          <el-collapse-item>
+            <template slot="title">
+              <el-form-item label="ID">
+                <el-input clearable v-model="listQuery.id" placeholder="请输入ID"></el-input>
+              </el-form-item>
+              <el-form-item label="厂家">
+                <el-select v-model="listQuery.device_type" clearable placeholder="请选择厂家">
+                  <el-option
+                    v-for="item in searchForm.device_type"
+                    :label="item.name"
+                    :value="item.value"
+                    :key="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="类型">
+                <el-select v-model="listQuery.type" clearable placeholder="请选择类型">
+                  <el-option
+                    v-for="item in searchForm.type"
+                    :label="item.name"
+                    :value="item.value"
+                    :key="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="启动类型">
+                <el-select v-model="listQuery.is_crv" clearable placeholder="请选择启动类型">
+                  <el-option
+                    v-for="item in searchForm.is_crv"
+                    :label="item.name"
+                    :value="item.value"
+                    :key="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </template>
             <el-form-item label="机型">
               <el-select v-model="listQuery.is_special" clearable placeholder="请选择机型">
                 <el-option
@@ -67,31 +58,18 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="4">
             <el-form-item label="设备号">
               <el-input clearable v-model="listQuery.device_number" placeholder="请输入设备号"></el-input>
             </el-form-item>
-          </el-col>
-          <el-col :span="4">
             <el-form-item label="TBox 流水号">
               <el-input clearable v-model="listQuery.serial_number" placeholder="请输入TBox 流水号"></el-input>
             </el-form-item>
-          </el-col>
-          <el-col :span="4">
             <el-form-item label="主机号流水号">
               <el-input clearable v-model="listQuery.hosts_number" placeholder="请输入主机号流水号"></el-input>
             </el-form-item>
-          </el-col>
-
-          <el-col :span="2">
-            <el-form-item>
-              <el-button type="primary" @click="handleFilter" icon="el-icon-search" size="small">查找</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
+            <el-button type="primary" @click="handleFilter" icon="el-icon-search" size="small">查找</el-button>
+          </el-collapse-item>
+        </el-collapse>
       </el-form>
     </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <!-- <el-dropdown
+  <el-dropdown
     placement="bottom"
     size="small"
     @command="onChangeLocale">
@@ -15,7 +15,7 @@
         {{ language.label }}
       </el-dropdown-item>
     </el-dropdown-menu>
-  </el-dropdown> -->
+  </el-dropdown>
 </template>
 
 <script>

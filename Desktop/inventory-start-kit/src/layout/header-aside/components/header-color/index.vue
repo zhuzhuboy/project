@@ -1,10 +1,10 @@
 <template>
-  <!-- <el-color-picker
+  <el-color-picker
     class="btn-text can-hover"
     :value="value"
     :predefine="predefine"
     size="mini"
-    @change="set"/> -->
+    @change="set"/>
 </template>
 
 <script>

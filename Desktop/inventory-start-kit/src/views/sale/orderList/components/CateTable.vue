@@ -8,12 +8,30 @@
       highlight-current-row
       @cell-click="tableClick"
       ref="multipleTable"
+      class="order-cate-table"
     >
+      <el-table-column type="expand">
+        <template v-slot="{row}">
+          <el-form label-position="left" class="demo-table-expand" label-width="100px">
+            <el-form-item label="操作员">
+              <span>{{ row.admin_name }}</span>
+            </el-form-item>
+            <el-form-item label="仓库名称">
+              <span>{{ row.stock_name }}</span>
+            </el-form-item>
+            <el-form-item label="快递单号">
+              <span>{{ row.express_no }}</span>
+            </el-form-item>
+            <el-form-item label="快递名称">
+              <span>{{ row.express_name }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column align="center" prop="id" label="#" width="60" />
-      <el-table-column align="center" label="操作员" prop="admin_name" />
-      <el-table-column align="center" label="业务日期" prop="bus_date" width="100" />
       <el-table-column align="center" prop="sale_orderNum" label="订单号" width="100" />
-      <el-table-column align="center" prop="stock_name" label="仓库名称" width="100" />
+      <el-table-column align="center" label="业务日期" prop="bus_date" width="100" />
+
       <el-table-column align="center" prop="s_purchase_num_sum" label="出库数量" width="100">
         <template v-slot="{row}">{{row.s_purchase_num_sum}}台</template>
       </el-table-column>
@@ -29,24 +47,17 @@
           <el-button size="small" type="success" v-if="row.status==2" disabled>已发货</el-button>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="full_agent_area" label="代理地址" width="140" />
-
       <el-table-column align="center" prop="receive_name" label="收货人" />
       <el-table-column align="center" prop="receive_phone" label="收货人电话" width="110" />
       <el-table-column align="center" prop="receive_address" label="收货地址" width="180" />
-      <el-table-column align="center" prop="express_name" label="快递名称" />
-      <el-table-column align="center" prop="express_no" label="快递单号" />
+      <!-- <el-table-column align="center" prop="express_name" label="快递名称" /> -->
+      <!-- <el-table-column align="center" prop="express_no" label="快递单号" /> -->
       <el-table-column align="center" prop="s_amount" label="总金额" />
       <el-table-column align="center" prop="s_taxes" label="税金" />
       <el-table-column align="center" prop="s_total_price" label=" 价税合计" />
       <!-- <el-table-column align="center" prop="remarks" label="备注" /> -->
     </el-table>
-    <el-dialog
-      title="请填写快递信息"
-      :visible.sync="dialogFormVisible"
-      width="30%"
-      @close="dialogClose"
-    >
+    <el-dialog title="请填写快递信息" :visible.sync="dialogFormVisible" width="30%" @close="dialogClose">
       <el-form :model="form" label-width="80px" :rules="rules" ref="ruleForm">
         <el-form-item label="快递公司" prop="express_name">
           <el-input v-model="form.express_name" placeholder="请输入快递公司" clearable></el-input>
@@ -60,7 +71,6 @@
         <el-button size="small" icon="el-icon-check" type="primary" @click="confirmBtn">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -104,9 +114,7 @@ export default {
       // 点击这一行把这一行数据用vuex保存起来
       let payload = {};
       //   uid
-      payload.agent_uid = row.agent_uid;
-      //   代理地址
-      payload.full_agent_area = row.full_agent_area;
+      payload.uid = row.uid;
       //   收货地址
       payload.receive_address = row.receive_address;
       //   收货人
@@ -166,3 +174,20 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.order-cate-table::v-deep {
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+}
+</style>

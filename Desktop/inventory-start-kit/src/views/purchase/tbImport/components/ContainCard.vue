@@ -2,7 +2,7 @@
   <el-card>
     <el-alert type="success" center style="margin-bottom:20px" :closable="false">
       <span>{{importName}}</span>
-      <span style="color:black;display:inline-block;padding-left:20px"> 当前已导入：</span>
+      <span style="color:black;display:inline-block;padding-left:20px">当前已导入：</span>
       <span style="color:red">{{this.table.data.length}}</span>
     </el-alert>
     <el-table
@@ -34,6 +34,7 @@
 
 <script>
 export default {
+
   props: {
     table: {},
     listLoading: {

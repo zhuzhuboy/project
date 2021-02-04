@@ -8,11 +8,7 @@
         ref="d2HeaderFormRef"
         size="small"
         style="margin-bottom: -20px;"
-      >
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-refresh" @click="shuaxin" size="small">刷新</el-button>
-        </el-form-item>
-      </el-form>
+      ></el-form>
     </template>
 
     <!-- 内容区 -->
@@ -23,7 +19,7 @@
 </template>
 
 <script>
-import ContainLayout from "./components/ContainLayoutt ";
+import ContainLayout from "./components/ContainLayout";
 export default {
   components: {
     ContainLayout
@@ -31,55 +27,8 @@ export default {
 
   data() {
     return {
-      lists: [],
-      total: 0,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        id: undefined,
-        num: undefined,
-        supply_name: undefined
-      },
-      listLoading: true,
-      addDialogVisible: false, // 新增对话框
-      editDialogVisible: false // 编辑对话框
+      listQuery: {}
     };
-  },
-  created() {
-    // this.getList()
-  },
-
-  methods: {
-    // 刷新
-    shuaxin() {
-      this.getList();
-    },
-
-    // 获取数据
-    getList() {
-      this.listLoading = true;
-      comLists(this.listQuery).then(res => {
-        this.lists = res.data.list;
-        this.total = res.data.total;
-        this.listLoading = false;
-      });
-    },
-    // 添加按钮
-    addBtn() {
-      this.addDialogVisible = true;
-    },
-
-    addDialog(flag) {
-      this.addDialogVisible = flag;
-    },
-    editDialog(flag) {
-      this.editDialogVisible = flag;
-    },
-    // 搜索按鈕
-    handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
-    }
   }
 };
 </script>

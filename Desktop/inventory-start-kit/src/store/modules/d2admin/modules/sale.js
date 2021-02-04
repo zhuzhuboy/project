@@ -6,6 +6,8 @@ export default {
         cateTableInfo: undefined, //分类表格保存的数据
         detailTableInfo: undefined, //详情表格保存的数据
         lookUpStatus: undefined, //查看的状态
+        dialogShow: false, //新建退货入库单dialog显示或隐藏
+        retWareDetail: undefined
     },
     mutations: {
 
@@ -41,12 +43,27 @@ export default {
         getDetailTableInfo(state, payload) {
             state.detailTableInfo = payload
         },
-         /**
+        /**
          * @description 查看按钮的状态，为true则可以调转查看页面
          * @param {Object} state state
          */
         getLookUpStatus(state, payload) {
             state.lookUpStatus = payload
+        },
+        /**
+         * @description 新建退货入库单的dialog窗口显示或隐藏
+         * @param {Object} state state
+         */
+        getDialogShow(state, payload) {
+            state.dialogShow = payload
+        },
+
+        /**
+         * @description 退款入库详情表格数据，包含id等信息
+         * @param {Object} state state
+         */
+        getRetWareDetail(state, payload) {
+            state.retWareDetail = payload
         },
     }
 }

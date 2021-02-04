@@ -18,7 +18,7 @@
       :show-close="false"
       :modal-append-to-body="false"
     >
-      <mate-table :mateTableData="mateTableData" />
+      <mate-table :mateTableData="mateTableData" v-on="$listeners" />
     </el-drawer>
   </el-card>
 </template>

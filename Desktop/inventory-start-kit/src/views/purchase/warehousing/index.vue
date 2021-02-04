@@ -8,88 +8,86 @@
         ref="listQuery"
         size="small"
         style="margin-bottom: -20px;"
+        class="d2header-form"
       >
         <!-- 按钮区 -->
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-refresh" @click="shuaxin" size="small">刷新</el-button>
-        </el-form-item>
-        <!-- 新增按钮 -->
-        <el-form-item>
-          <el-button type="success" @click="addBtn" icon="el-icon-edit" size="small">新建采购入库单</el-button>
-        </el-form-item>
-        <!-- <el-form-item>
-          <el-button
-            type="primary"
-            @click="editBtn"
-            icon="el-icon-edit-outline"
-            size="small"
-          >编辑采购入库单</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="danger" @click="deleteBtn" icon="el-icon-delete" size="small">删除采购入库单</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="success" @click="submitBtn" icon="el-icon-upload" size="small">提交入库</el-button>
-        </el-form-item>-->
 
-        <!-- 订单号搜索 -->
-        <el-row>
-          <el-form-item label="订单号">
-            <el-input
-              v-model="listQuery.odd_num"
-              placeholder="输入订单号"
-              clearable
-              style="width: 100px;"
-            />
-          </el-form-item>
+        <el-collapse>
+          <el-collapse-item>
+            <template slot="title">
+              <el-row>
+                <el-form-item>
+                  <el-button
+                    type="primary"
+                    icon="el-icon-refresh"
+                    @click.stop="shuaxin"
+                    size="small"
+                  >刷新</el-button>
+                </el-form-item>
+                <!-- 新增按钮 -->
+                <el-form-item>
+                  <el-button type="success" @click="addBtn" icon="el-icon-edit" size="small">新建采购入库单</el-button>
+                </el-form-item>
+                <el-form-item label="订单号" prop="odd_num">
+                  <el-input
+                    v-model="listQuery.odd_num"
+                    placeholder="输入订单号"
+                    clearable
+                    style="width: 100px;"
+                  />
+                </el-form-item>
 
-          <el-form-item label="业务日期">
-            <el-date-picker
-              v-model="listQuery.date"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
-          </el-form-item>
+                <el-form-item label="业务日期" prop="date">
+                  <el-date-picker
+                    v-model="listQuery.date"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  ></el-date-picker>
+                </el-form-item>
 
-          <el-form-item label="供应商">
-            <el-select v-model="listQuery.supply_id" placeholder="请选择" clearable>
-              <el-option
-                v-for="item in listData.supply"
-                :key="item.id"
-                :label="item.supply_name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+                <el-form-item label="供应商" prop="supply_id">
+                  <el-select v-model="listQuery.supply_id" placeholder="请选择" clearable>
+                    <el-option
+                      v-for="item in listData.supply"
+                      :key="item.id"
+                      :label="item.supply_name"
+                      :value="item.id"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-row>
+            </template>
+            <el-row>
+              <el-form-item label="支付类型" prop="payment_id">
+                <el-select v-model="listQuery.payment_id" placeholder="请选择" clearable>
+                  <el-option
+                    v-for="item in listData.payment"
+                    :key="item.id"
+                    :label="item.payment_name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="物料" prop="goods_id">
+                <el-select v-model="listQuery.goods_id" placeholder="请选择" clearable>
+                  <el-option
+                    v-for="item in listData.genGoods"
+                    :key="item.id"
+                    :label="item.goods_name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
 
-          <el-form-item label="支付类型">
-            <el-select v-model="listQuery.payment_id" placeholder="请选择" clearable>
-              <el-option
-                v-for="item in listData.payment"
-                :key="item.id"
-                :label="item.payment_name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="物料">
-            <el-select v-model="listQuery.goods_id" placeholder="请选择" clearable>
-              <el-option
-                v-for="item in listData.genGoods"
-                :key="item.id"
-                :label="item.goods_name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-button type="primary" @click="handleFilter" icon="el-icon-search">查找</el-button>
-          </el-form-item>
-        </el-row>
+              <el-form-item>
+                <el-button type="primary" @click="handleFilter" icon="el-icon-search">查找</el-button>
+              </el-form-item>
+            </el-row>
+          </el-collapse-item>
+        </el-collapse>
+        <!-- 搜索 -->
       </el-form>
     </template>
 
@@ -100,6 +98,7 @@
       :drawerShow="drawerShow"
       :cateLoading="cateLoading"
       :listLoading="listLoading"
+      @handleEdit="handleEdit"
       @searchById="searchById"
       @modifyDrawerShow="modifyDrawerShow"
       @cateTableRef="cateTableRef"
@@ -113,20 +112,20 @@
 
 <script>
 // 相对路径
-import ContainCard from './components/ContainCard'
+import ContainCard from "./components/ContainCard";
 import {
   generatedList,
   enterDetails,
   submits
-} from '@/api/purchase/purWare.js'
+} from "@/api/purchase/purWare.js";
 
-import { toDate } from '@libs/tools.js'
+import { toDate } from "@libs/tools.js";
 
 export default {
   components: {
     ContainCard
   },
-  data () {
+  data() {
     return {
       cateTableData: [],
       mateTableData: [],
@@ -144,107 +143,128 @@ export default {
       listLoading: undefined,
       cateLoading: undefined,
       multipleTable: undefined // cateTabelRef
-    }
+    };
   },
-  created () {
-    let showDrawer = this.$store.state.d2admin.purchase.wareDrawerShow
-    let id = this.$store.state.d2admin.purchase.record_id
+  created() {
+    let showDrawer = this.$store.state.d2admin.purchase.wareDrawerShow;
+    let id = this.$store.state.d2admin.purchase.record_id;
     this.$nextTick(() => {
       if (showDrawer === true && id !== undefined) {
-        this.searchById(id)
+        this.searchById(id);
       }
-    })
-    this.getCateList(undefined, 'created')
+    });
+    this.getCateList(undefined, "created");
   },
   computed: {
     // 导入按钮对应的状态
-    importStatus () {
-      return this.$store.state.d2admin.purchase.importStatus
+    importStatus() {
+      return this.$store.state.d2admin.purchase.importStatus;
     }
   },
   // 组件要离开的时候把vuex保存的显示抽屉状态改为false。只有在表格导入栏中会更改状态为true
-  beforeRouteLeave (to, from, next) {
-    console.log(to)
-
-    this.$store.commit('d2admin/purchase/getWareDrawerShow', false)
-    next()
+  beforeRouteLeave(to, from, next) {
+    this.$store.commit("d2admin/purchase/getWareDrawerShow", false);
+    next();
   },
   methods: {
     // 刷新
-    shuaxin () {
-      this.getCateList()
+    shuaxin() {
+      this.$refs.listQuery.resetFields();
+      this.getCateList();
     },
     // 获取采购订单物料
-    async getCateList (options, flag) {
-      this.cateLoading = true
-      let res = await generatedList(options)
-      this.listData = res.data
-      this.cateTableData = res.data.record
-      this.cateLoading = false
+    async getCateList(options, flag) {
+      this.cateLoading = true;
+      let res = await generatedList(options);
+      this.listData = res.data;
+      this.cateTableData = res.data.record;
+      this.cateLoading = false;
       // 如果flag是created证明是第一次加载。设置当前第一个数据是高亮显示
-      if (flag === 'created') {
+      if (flag === "created") {
         this.$nextTick(() => {
-          this.multipleTable.setCurrentRow(this.cateTableData[0], true)
-        })
+          this.multipleTable.setCurrentRow(this.cateTableData[0], true);
+        });
       }
     },
     // 得到详情并赋值
-    async getEnterDetails (options) {
-      this.listLoading = true
-      let result = await enterDetails(options)
-      this.listLoading = false
-      this.mateTableData = result.data.list
+    async getEnterDetails(options) {
+      this.listLoading = true;
+      let result = await enterDetails(options);
+      this.listLoading = false;
+      this.mateTableData = result.data.list;
     },
-    searchById (id) {
-      this.modifyDrawerShow(true)
+    searchById(id) {
+      this.modifyDrawerShow(true);
       let option = {
         record_id: id
-      }
-      this.getEnterDetails(option)
+      };
+      this.getEnterDetails(option);
     },
-
+    // 处理编辑事件
+    async handleEdit(row) {
+      console.log(row);
+      let {
+        payment_id,
+        stock_id,
+        supply_id,
+        bus_date,
+        remarks,
+        id,
+        odd_num
+      } = row;
+      // 得到详情数据
+      let result = await enterDetails({
+        record_id: row.id
+      });
+      let tableData = result.data.list;
+      // 保存vuex中
+      this.$store.commit("d2admin/purchase/getTableData", {
+        tableData,
+        formData: {
+          payment_id,
+          stock_id,
+          supply_id,
+          bus_date,
+          remarks,
+          id,
+          odd_num
+        }
+      });
+      // 跳转页面
+      this.$router.push("/purchase/add");
+    },
     // 控制详情页显示或隐藏
-    modifyDrawerShow (flag) {
-      this.drawerShow = flag
+    modifyDrawerShow(flag) {
+      this.drawerShow = flag;
     },
     // 新建按钮挑战到新建页面
-    addBtn () {
-      this.$router.push('add')
+    addBtn() {
+      this.$router.push("add");
     },
-    // 编辑按钮。暂时测试为挑战到导入表格页面
-    editBtn () {
-      this.$router.push('tbImport')
-    },
-    // 删除按钮
-    deleteBtn () {},
-    // 提交按钮
-    submitBtn () {},
+
     // 搜索按鈕
-    handleFilter () {
+    handleFilter() {
       // 整理请求参数
-      let dataResult = []
-      let date
+      let dataResult = [];
+      let date;
       // 选择了日期,遍历数据更改格式。
       if (Array.isArray(this.listQuery.date)) {
         this.listQuery.date.forEach(item => {
-          dataResult.push(toDate(item.getTime()))
-        })
-        date = { date: dataResult }
+          dataResult.push(toDate(item.getTime()));
+        });
+        date = { date: dataResult };
       }
 
-      let option = Object.assign({}, this.listQuery, date)
+      let option = Object.assign({}, this.listQuery, date);
 
-      this.getCateList(option)
+      this.getCateList(option);
     },
-    cateTableRef (ref) {
-      this.multipleTable = ref
+    cateTableRef(ref) {
+      this.multipleTable = ref;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.row-margin {
-  margin-top: 20px;
-}
 </style>

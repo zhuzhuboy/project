@@ -4,21 +4,23 @@ import info from './modules/info'
 import materiel from './modules/materiel'
 // 采购
 import purchase from './modules/purchase'
-// 库存
-// import stock from './modules/stock'
 // 销售
 import sale from './modules/sale'
 // 成品
 import finishedProduct from './modules/finishedProduct'
-// 出库留着备用
-import delivery from './modules/delivery'
+// 退换货
+import exchangeGoods from './modules/exchangeGoods'
+// 客户
+import customer from './modules/customer'
+// 客户
+import set from './modules/set'
 // 菜单 侧边栏
 export const menuAside = [
-    info,
-    materiel,
     purchase,
     sale,
     finishedProduct,
+    exchangeGoods,
+    set
 ]
 
 // 菜单 顶栏
@@ -27,9 +29,9 @@ export const menuHeader = [{
         title: '首页',
         icon: 'home'
     },
-    info,
-    materiel,
     purchase,
     sale,
     finishedProduct,
+    exchangeGoods,
+    set
 ]

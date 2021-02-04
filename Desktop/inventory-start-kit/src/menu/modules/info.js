@@ -6,12 +6,12 @@ export default {
     {
       path: `${pre}/supplier/list`,
       title: '供应商',
-      icon: 'file-text'
+      icon: 'codepen'
     },
     {
       path: `${pre}/warehouse/list`,
       title: '仓库',
-      icon: 'file-text'
+      icon: 'building'
     }
   ])('/info')
 }

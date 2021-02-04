@@ -8,7 +8,8 @@ export default {
         details_goodsName: undefined,
         purchaseInfo: undefined, //采购入库首页表格中的信息。
         detailInfo: undefined, //采购入库x详情表格中的信息。
-        isLookUp: false, //是否是查看按钮跳转过来的
+        isLookUp: false, //是否是查看按钮跳转过来的,
+        tableData: undefined //编辑按钮获取的数据详情表格数据,
     },
     mutations: {
 
@@ -59,6 +60,10 @@ export default {
         // 保存查看按钮信息
         getIsLookUp(state, payload) {
             state.isLookUp = payload
+        },
+        // 保存编辑表格获取到的详情数据
+        getTableData(state, payload) {
+            state.tableData = payload
         },
     }
 }

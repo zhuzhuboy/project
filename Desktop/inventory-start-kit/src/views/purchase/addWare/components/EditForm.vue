@@ -9,21 +9,27 @@
     >
       <!-- 第一行 -->
       <el-row :gutter="20">
-        <el-col :span="4" style="min-width:220px">
+        <el-col :span="5" style="min-width:220px">
           <el-form-item label="单号">
-            <span class="font-red">保存后自动生成</span>
+            <span class="font-red">{{!isEdit?'保存后自动生成':getTableDataByVuex.formData.odd_num}}</span>
           </el-form-item>
         </el-col>
 
         <el-col :span="7" style="max-width:300px;min-width:300px">
           <el-form-item label="业务日期" prop="bus_date">
-            <el-date-picker v-model="form.bus_date" :clearable="false" ref="dataPicker"></el-date-picker>
+            <el-date-picker
+              v-model="form.bus_date"
+              clearable
+              ref="dataPicker"
+              placeholder="请选择日期"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
           </el-form-item>
         </el-col>
 
-        <el-col :span="5" class="supplier">
+        <el-col :span="6" class="supplier">
           <el-form-item label="供应商" prop="supply_id">
-            <el-select v-model="form.supply_id" placeholder="请选择" style="width:100%">
+            <el-select v-model="form.supply_id" placeholder="请选择供应商" style="width:100%">
               <el-option
                 v-for="item in formData.supply"
                 :key="item.id"
@@ -36,9 +42,9 @@
       </el-row>
       <!-- 第二行 -->
       <el-row :gutter="20">
-        <el-col :span="4" style="min-width:220px" class="warehouse">
+        <el-col :span="5" style="min-width:220px" class="warehouse">
           <el-form-item label="入库仓库" prop="stock_id">
-            <el-select v-model="form.stock_id" placeholder="请选择" style="width:100%">
+            <el-select v-model="form.stock_id" placeholder="请选择入库仓库" style="width:100%">
               <el-option
                 v-for="item in formData.stock"
                 :key="item.id"
@@ -48,9 +54,9 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="5">
           <el-form-item label="付款方式" prop="payment_id" class required>
-            <el-select v-model="form.payment_id" placeholder="请选择" style="width:100%">
+            <el-select v-model="form.payment_id" placeholder="请选择付款方式" style="width:100%">
               <el-option
                 v-for="item in formData.payment"
                 :key="item.id"
@@ -74,32 +80,32 @@
 </template>
 
 <script>
-import EditTable from './EditTable'
+import EditTable from "./EditTable";
 export default {
   components: {
     EditTable
   },
-  mounted () {
+  mounted() {
     // 传递ref
-    this.$emit('getFormRef', this.$refs.addWareForm)
+    this.$emit("getFormRef", this.$refs.addWareForm);
   },
-  data () {
+  data() {
     return {
       rules: {
         supply_id: [
-          { required: true, message: '请选择供应商', trigger: 'change' }
+          { required: true, message: "请选择供应商", trigger: "change" }
         ],
         stock_id: [
-          { required: true, message: '请选择仓库', trigger: 'change' }
+          { required: true, message: "请选择仓库", trigger: "change" }
         ],
         payment_id: [
-          { required: true, message: '请选择付款方式', trigger: 'change' }
+          { required: true, message: "请选择付款方式", trigger: "change" }
         ],
         bus_date: [
-          { required: true, message: '请选择业务日期', trigger: 'change' }
+          { required: true, message: "请选择业务日期", trigger: "change" }
         ]
       }
-    }
+    };
   },
   props: {
     formData: {
@@ -107,9 +113,18 @@ export default {
     },
     form: {
       type: Object
+    },
+    isEdit: {
+      type: Boolean
+    }
+  },
+  computed: {
+    //   保存在vuex中详情表格数据
+    getTableDataByVuex() {
+      return this.$store.state.d2admin.purchase.tableData;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" >

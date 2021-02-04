@@ -8,13 +8,16 @@ import info from './modules/info'
 import materiel from './modules/materiel'
 // 采购
 import purchase from './modules/purchase'
-// 库存
-// import stock from './modules/stock'
 // 销售
 import sale from './modules/sale'
 // 成品
 import finishedProduct from './modules/finishedProduct'
-
+// 退换货
+import exchangeGoods from './modules/exchangeGoods'
+// 客户
+import customer from './modules/customer'
+// set
+import set from './modules/set'
 
 import layoutHeaderAside from '@/layout/header-aside'
 
@@ -71,7 +74,10 @@ const frameIn = [{
     materiel,
     purchase,
     sale,
-    finishedProduct
+    finishedProduct,
+    exchangeGoods,
+    customer,
+    set
 ]
 
 /**

@@ -3,7 +3,7 @@ import request from '@/plugin/axios'
 // 供应商列表
 export function comLists (data) {
   return request({
-    url: 'adInfo/comLists',
+    url: 'adset/comLists',
     method: 'post',
     data
   })
@@ -12,7 +12,7 @@ export function comLists (data) {
 // 新增供应商
 export function comSaveEd (data) {
   return request({
-    url: 'adInfo/comSaveEd',
+    url: 'adset/comSaveEd',
     method: 'post',
     data
   })
@@ -20,7 +20,7 @@ export function comSaveEd (data) {
 // 删除
 export function comDel (data) {
   return request({
-    url: 'adInfo/comDel ',
+    url: 'adset/comDel ',
     method: 'post',
     data
   })

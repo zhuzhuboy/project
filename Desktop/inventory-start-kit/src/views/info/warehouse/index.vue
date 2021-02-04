@@ -18,13 +18,13 @@
           <el-button type="success" @click="addDialog(true)" icon="el-icon-edit" size="small">新增</el-button>
         </el-form-item>
         <!-- id搜索 -->
-        <el-form-item label="ID">
+        <el-form-item label="ID" prop="id">
           <el-input v-model="listQuery.id" placeholder="请输入" clearable style="width: 100px;" />
         </el-form-item>
-        <el-form-item label="编码">
+        <el-form-item label="编码" prop="num">
           <el-input v-model="listQuery.num" placeholder="请输入" clearable style="width: 100px;" />
         </el-form-item>
-        <el-form-item label="仓库名称">
+        <el-form-item label="仓库名称" prop="stock_name">
           <el-input
             v-model="listQuery.stock_name"
             placeholder="请输入"
@@ -57,7 +57,6 @@
         :limit.sync="listQuery.limit"
         @pagination="getList"
       />
-
     </template>
   </d2-container>
 </template>
@@ -97,13 +96,18 @@ export default {
   methods: {
     // 刷新
     shuaxin() {
-      this.getList();
+      this.$refs.listQuery.resetFields();
+      let option = {
+        page: 1,
+        limit: 10
+      };
+      this.getList(option);
     },
 
     // 获取数据
-    async getList() {
+    async getList(option) {
       this.listLoading = true;
-      let res = await stockList(this.listQuery);
+      let res = await stockList(option ? option : this.listQuery);
       this.lists = res.data.list;
       this.total = res.data.total;
       this.listLoading = false;

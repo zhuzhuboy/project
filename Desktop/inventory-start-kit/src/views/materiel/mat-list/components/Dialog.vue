@@ -1,16 +1,16 @@
 <template>
   <el-dialog
-    :title="title"
+    :title="data.title"
     :visible.sync="dialogShow"
     width="40%"
-    @close="cancelBtn('editForm')"
+    @close="cancelBtn"
     class="pd-lr-50"
   >
     <el-form ref="refForm" :model="data" label-width="80px" :rules="rules" label-position="left">
       <el-row :gutter="20">
         <el-col :span="13">
           <el-form-item label="物料分类" prop="category_id">
-            <el-select v-model="data.category_id" placeholder="请选择" style="width:100%">
+            <el-select v-model="data.category_id" placeholder="请选择" style="width:100%" clearable>
               <el-option
                 v-for="item in formSelect.idArr"
                 :key="item.id"
@@ -74,25 +74,25 @@
         <el-col :span="12">
           <el-form-item label="启动类型" prop="is_crv">
             <el-select v-model="data.is_crv" placeholder="请选择启动类型" clearable>
-              <el-option label="钥匙启动" value="0"></el-option>
-              <el-option label="一键启动" value="1"></el-option>
+              <el-option label="钥匙启动" :value="0"></el-option>
+              <el-option label="一键启动" :value="1"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="扫描类型" prop="scan_type">
             <el-select v-model="data.scan_type" placeholder="请选择扫描类型" clearable>
-              <el-option label="TBox" value="1"></el-option>
-              <el-option label="澳多通用主机" value="2"></el-option>
-              <el-option label="云掌行主机" value="3"></el-option>
-              <el-option label="澳多专用主机" value="4"></el-option>
+              <el-option label="TBox" :value="1"></el-option>
+              <el-option label="澳多通用主机" :value="2"></el-option>
+              <el-option label="云掌行主机" :value="3"></el-option>
+              <el-option label="澳多专用主机" :value="4"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-form-item label="税率" prop="tax_rate">
-        <el-select v-model="data.tax_rate" placeholder="请选择" style="width:100%">
+        <el-select v-model="data.tax_rate" placeholder="请选择" style="width:100%" clearable>
           <el-option
             v-for="item in formSelect.tax_rateArr"
             :key="item.id"
@@ -102,7 +102,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="物料类型" prop="m_type">
-        <el-select v-model="data.m_type" placeholder="请选择" style="width:100%">
+        <el-select v-model="data.m_type" placeholder="请选择" style="width:100%" clearable>
           <el-option
             v-for="item in formSelect.m_typeArr"
             :key="item.id"
@@ -135,33 +135,38 @@ import { validateCode } from "@libs/util.validator.js";
 export default {
   data() {
     return {
-      select: {
-        is_crv: []
-      },
       rules: {
         category_id: [
-          { required: true, message: "请输入分类ID", trigger: "blur" },
+          { required: true, message: "请选择物料分类", trigger: "change" },
           { validator: validateCode, trigger: "blur" }
         ],
         code: [
-          { required: true, message: "请输入物料编码", trigger: "blur" },
+          { required: true, message: "请填写物料编码", trigger: "blur" },
           { validator: validateCode, trigger: "blur" }
         ],
-        tax_rate: [{ required: true, message: "请输入税率", trigger: "blur" }],
+        tax_rate: [
+          { required: true, message: "请选择税率", trigger: "change" }
+        ],
         sale_price: [
-          { required: true, message: "请输入销售价格", trigger: "blur" },
-          { validator: validateCode, trigger: "blur" }
+          { required: true, message: "请填写销售价格", trigger: "blur" },
+          { validator: validateCode, trigger: "change" }
         ],
         purchase_price: [
-          { required: true, message: "请输入购买价格", trigger: "blur" },
-          { validator: validateCode, trigger: "blur" }
+          { required: true, message: "请填写购买价格", trigger: "blur" },
+          { validator: validateCode, trigger: "change" }
         ],
-        spec: [{ required: true, message: "请输入规格型号", trigger: "blur" }],
+        spec: [{ required: true, message: "请填写规格型号", trigger: "blur" }],
         m_type: [
-          { required: true, message: "请输入无物料类型", trigger: "blur" }
+          { required: true, message: "请选择物料类型", trigger: "change" }
         ],
         goods_name: [
-          { required: true, message: "请输入计量单位", trigger: "blur" }
+          { required: true, message: "请填写物料名称", trigger: "blur" }
+        ],
+        is_crv: [
+          { required: true, message: "请选择启动类型", trigger: "blur" }
+        ],
+        scan_type: [
+          { required: true, message: "请选择扫描类型", trigger: "blur" }
         ]
       }
     };
@@ -174,10 +179,8 @@ export default {
     data: {
       type: Object
     },
-    title: {
-      type: String
-    },
-    formSelect: {//form表单的select选项
+    formSelect: {
+      //form表单的select选项
       type: Object
     }
   },
@@ -187,24 +190,32 @@ export default {
       get() {
         return this.dialogVisible;
       },
-      set() {
-        console.log(7);
-        this.$emit("dialogClose");
-      }
+      set() {}
     }
   },
+
   methods: {
     // 取消按钮
+    // 关闭dialog，dialog隐藏
     cancelBtn() {
+      this.$emit("dialogClose", false);
       // 表单重置
-      this.$refs.refForm.resetFields();
+      this.$nextTick(() => {
+        this.$refs.refForm.clearValidate();
+      });
     },
+    // 确认事件
     confirmBtn() {
       let refDom = this.$refs.refForm;
-      this.$emit("confirmClick", refDom);
+      //   验证通过后触发事件
+      refDom.validate(async result => {
+        if (result) {
+          this.$emit("confirmClick");
+        }
+      });
     },
     cateName(val) {
-      let reg = /（\d）+/gi;
+      let reg = /（\d+）/gi;
       let str = val.replace(reg, "");
       return str;
     },
@@ -231,6 +242,14 @@ export default {
       let restNum = /(?<=\.\d{2})[\d-\D]+/;
       if (restNum.test(data[key])) {
         data[key] = data[key].replace(restNum, "");
+      }
+    }
+  },
+  watch: {
+    //   dialog显示并且有ref。则清除表单验证
+    dialogVisible(flag) {
+      if (flag && this.$refs.refForm) {
+        this.$refs.refForm.clearValidate();
       }
     }
   }

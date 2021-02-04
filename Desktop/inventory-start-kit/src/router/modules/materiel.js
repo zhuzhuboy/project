@@ -33,5 +33,5 @@ export default {
       title: '原始物料分类'
     }
   }
-  ])('info-')
+  ])('materiel-')
 }

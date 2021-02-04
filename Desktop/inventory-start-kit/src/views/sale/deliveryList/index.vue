@@ -9,78 +9,88 @@
         size="small"
         style="margin-bottom: -20px;"
         label-width="90px"
+        class="deliver-form"
       >
-        <el-row>
-          <el-form-item label="ID">
-            <el-input v-model="listQuery.id" placeholder="请输入" clearable />
-          </el-form-item>
-          <el-form-item label="业务日期" prop="hosts_number">
-            <el-date-picker
-              v-model="listQuery.date"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              value-format="yyyy-MM-dd"
-            ></el-date-picker>
-          </el-form-item>
-          <el-form-item label="设备厂家" prop="device_type">
-            <el-select v-model="listQuery.device_type" placeholder="请选择厂家" clearable>
-              <el-option label="澳多" value="0"></el-option>
-              <el-option label="云掌行" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="启动方式" prop="is_crv">
-            <el-select v-model="listQuery.is_crv" placeholder="请选择启动方式" clearable>
-              <el-option label="钥匙启动" value="0"></el-option>
-              <el-option label="一键启动" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="设备机型" prop="is_special">
-            <el-select v-model="listQuery.is_special" placeholder="请选择设备机型" clearable>
-              <el-option label="通用机型" value="0"></el-option>
-              <el-option label="专用机型" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="设备类型" prop="type">
-            <el-select v-model="listQuery.type" placeholder="请选择设备类型" clearable>
-              <el-option label="TBox" value="0"></el-option>
-              <el-option label="主机" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-form-item label="设备号" prop="device_number" class="el-input-col">
-            <el-input
-              style="width:140px"
-              v-model="listQuery.device_number"
-              placeholder="请输入设备号"
-              clearable
-            />
-          </el-form-item>
+        <el-collapse>
+          <el-collapse-item>
+            <template slot="title">
+              <el-form-item label="ID">
+                <el-input v-model="listQuery.id" placeholder="请输入" clearable />
+              </el-form-item>
+              <el-form-item label="业务日期" prop="hosts_number">
+                <el-date-picker
+                  v-model="listQuery.date"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="设备厂家" prop="device_type">
+                <el-select v-model="listQuery.device_type" placeholder="请选择厂家" clearable>
+                  <el-option label="澳多" value="0"></el-option>
+                  <el-option label="云掌行" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="启动方式" prop="is_crv">
+                <el-select v-model="listQuery.is_crv" placeholder="请选择启动方式" clearable>
+                  <el-option label="钥匙启动" value="0"></el-option>
+                  <el-option label="一键启动" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="设备机型" prop="is_special">
+                <el-select v-model="listQuery.is_special" placeholder="请选择设备机型" clearable>
+                  <el-option label="通用机型" value="0"></el-option>
+                  <el-option label="专用机型" value="1"></el-option>
+                </el-select>
+              </el-form-item>
+            </template>
 
-          <el-form-item label="TBox流水号" prop="serial_number" class="el-input-col">
-            <el-input
-              style="width:140px"
-              v-model="listQuery.serial_number"
-              placeholder="请输入TBox流水号"
-              clearable
-            />
-          </el-form-item>
+            <el-form-item label="设备机型" prop="is_special">
+              <el-select v-model="listQuery.is_special" placeholder="请选择设备机型" clearable>
+                <el-option label="通用机型" value="0"></el-option>
+                <el-option label="专用机型" value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="设备类型" prop="type">
+              <el-select v-model="listQuery.type" placeholder="请选择设备类型" clearable>
+                <el-option label="TBox" value="0"></el-option>
+                <el-option label="主机" value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="设备号" prop="device_number" class="el-input-col" label-width="70px">
+              <el-input
+                style="width:140px"
+                v-model="listQuery.device_number"
+                placeholder="请输入设备号"
+                clearable
+              />
+            </el-form-item>
 
-          <el-form-item label="主机流水号" prop="hosts_number" class="el-input-col">
-            <el-input
-              v-model="listQuery.hosts_number"
-              placeholder="请输入主机流水号"
-              clearable
-              style="width:140px"
-            />
-          </el-form-item>
+            <el-form-item label="TBox流水号" prop="serial_number" class="el-input-col">
+              <el-input
+                style="width:140px"
+                v-model="listQuery.serial_number"
+                placeholder="请输入TBox流水号"
+                clearable
+              />
+            </el-form-item>
 
-          <el-form-item>
-            <el-button type="primary" @click="handleFilter" icon="el-icon-search">查找</el-button>
-          </el-form-item>
-        </el-row>
+            <el-form-item label="主机流水号" prop="hosts_number" class="el-input-col">
+              <el-input
+                v-model="listQuery.hosts_number"
+                placeholder="请输入主机流水号"
+                clearable
+                style="width:140px"
+              />
+            </el-form-item>
+
+            <el-form-item>
+              <el-button type="primary" @click="handleFilter" icon="el-icon-search">查找</el-button>
+            </el-form-item>
+          </el-collapse-item>
+        </el-collapse>
       </el-form>
     </template>
 
@@ -142,6 +152,9 @@ export default {
   },
   beforeRouteLeave(f, t, n) {
     this.$store.commit("d2admin/sale/getLookUpStatus", false);
+    this.$store.commit("d2admin/sale/getDetailTableInfo", undefined);
+    this.$store.commit("d2admin/sale/getCateTableInfo", undefined);
+
     n();
   },
   computed: {
@@ -175,13 +188,14 @@ export default {
   }
 };
 </script>
-<style >
-.el-input--small .el-input__inner {
-  width: 90px;
-}
-.el-input-col input.el-input__inner {
-  width: 100%;
+<style lang="scss">
+.deliver-form {
+  .el-input--small .el-input__inner {
+    width: 90px;
+  }
+  .el-input-col input.el-input__inner {
+    width: 100%;
+  }
 }
 </style>
-<style lang="scss" scoped>
-</style>
+

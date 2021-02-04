@@ -4,7 +4,13 @@
     <el-aside width="400px" style="background:#fff" class="contain-aside">
       <!-- 标题 -->
       <!-- <h5 class="aside-h5">扫码</h5> -->
-      <el-alert :title="formData.s_goods_name" type="success" center style="marginBottom:40px" :closable="false"></el-alert>
+      <el-alert
+        :title="formData.s_goods_name"
+        type="success"
+        center
+        style="marginBottom:40px"
+        :closable="false"
+      ></el-alert>
       <!-- 单选 -->
 
       <el-form :model="formData" ref="numberValidateForm" label-width="90px">
@@ -33,10 +39,8 @@
             :disabled="formData.s_purchase_num<=0"
           ></el-input>
         </el-form-item>
-        <el-form-item label="代理地址：">
-          <el-tag size>{{formData.full_agent_area}}</el-tag>
-        </el-form-item>
-        <el-form-item label="收货地址：">
+
+        <el-form-item label="客户地址：">
           <el-tag size>{{formData.receive_address}}</el-tag>
         </el-form-item>
       </el-form>
@@ -68,10 +72,9 @@ export default {
         scan_type: undefined, //1表示TBox。2表示澳多通用主机，3,4
         s_goods_name: undefined,
         s_purchase_num: undefined,
-        full_agent_area: undefined,
         receive_address: undefined,
         id: undefined,
-        agent_uid: undefined,
+        uid: undefined,
         number: undefined
       },
       tableData: []
@@ -83,9 +86,11 @@ export default {
     // 初始化防抖函数
   },
   computed: {
+    //   获取vuex中数据（分类表格保存的）
     cateTableInfo() {
       return this.$store.state.d2admin.sale.cateTableInfo;
     },
+    //   获取vuex中数据（详情表格保存的）
     detailTableInfo() {
       return this.$store.state.d2admin.sale.detailTableInfo;
     }
@@ -96,14 +101,13 @@ export default {
       // 值为空。退出
       if (!e) return;
       //判断是TBox
-      console.log(this.formData.scan_type);
       if (this.formData.scan_type == 1) {
         //   返回tbox流水号相同的项
         let result = this.tableData.find(item => item.serial_number == e);
         // 如果有相同的项，则提示用户。并退出函数。不在向下执行
         if (result) {
           this.$message({
-            message: "TBox流水号已在现有表格中存在 " + result.serial_number,
+            message: "'TBox流水号已在现有表格中存在' " + result.serial_number,
             type: "warning"
           });
           return;
@@ -127,14 +131,11 @@ export default {
       let res = await scanCode(option);
       // 调用接口，返回表格数据中的一项。加入到表格中
       let dataItem = this.deviceMatchData(res);
-      console.log(dataItem);
       let num = dataItem;
-
       this.tableData.push(dataItem);
       //   每成功调用一次接口。数量就减少一个
       this.formData.s_purchase_num--;
       this.formData.number = "";
-      console.log(this.formData);
     },
     initForm() {
       this.formData.is_crv = this.detailTableInfo.is_crv;
@@ -142,9 +143,9 @@ export default {
       this.formData.s_goods_name = this.detailTableInfo.s_goods_name;
       this.formData.s_purchase_num = this.detailTableInfo.s_purchase_num;
       this.formData.id = this.detailTableInfo.id;
-      this.formData.full_agent_area = this.cateTableInfo.full_agent_area;
+
       this.formData.receive_address = this.cateTableInfo.receive_address;
-      this.formData.agent_uid = this.cateTableInfo.agent_uid;
+      this.formData.uid = this.cateTableInfo.uid;
     },
     // 设备类型匹配数据。对应渲染表格
     deviceMatchData(res) {
@@ -198,7 +199,6 @@ export default {
 
   watch: {
     "formData.s_purchase_num"(val) {
-      console.log("s", val);
       if (val <= 0) {
         this.formData.number = "";
       }
